@@ -1,0 +1,65 @@
+# Grafana Mimir Values
+# Chart: mimir-distributed
+
+mimir:
+  structuredConfig:
+    common:
+      storage:
+        backend: s3
+        s3:
+          endpoint: s3.amazonaws.com
+          region: us-east-1
+          bucket_name: mimir-data
+    blocks_storage:
+      s3:
+        bucket_name: mimir-blocks
+    alertmanager_storage:
+      s3:
+        bucket_name: mimir-alertmanager
+    ruler_storage:
+      s3:
+        bucket_name: mimir-ruler
+
+minio:
+  enabled: true
+  persistence:
+    size: 10Gi
+
+alertmanager:
+  enabled: true
+  replicas: 1
+
+ruler:
+  enabled: true
+  replicas: 1
+
+ingester:
+  replicas: 3
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: 1000m
+      memory: 4Gi
+  persistentVolume:
+    size: 20Gi
+
+store_gateway:
+  replicas: 3
+  persistentVolume:
+    size: 10Gi
+
+distributor:
+  replicas: 2
+
+querier:
+  replicas: 2
+
+query_frontend:
+  replicas: 2
+
+compactor:
+  replicas: 1
+  persistentVolume:
+    size: 20Gi
