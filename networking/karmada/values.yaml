@@ -1,0 +1,49 @@
+# Karmada Helm Chart Values
+# Source: https://github.com/karmada-io/karmada/tree/master/charts/karmada
+
+# Control Plane Components
+apiServer:
+  replicaCount: 2
+  image:
+    repository: docker.io/karmada/karmada-apiserver
+    tag: v1.8.0
+
+kubeControllerManager:
+  replicaCount: 1
+  image:
+    repository: docker.io/karmada/kube-controller-manager
+    tag: v1.26.0
+
+karmadaControllerManager:
+  replicaCount: 2
+  image:
+    repository: docker.io/karmada/karmada-controller-manager
+    tag: v1.8.0
+
+karmadaScheduler:
+  replicaCount: 2
+  image:
+    repository: docker.io/karmada/karmada-scheduler
+    tag: v1.8.0
+
+karmadaWebhook:
+  replicaCount: 2
+  image:
+    repository: docker.io/karmada/karmada-webhook
+    tag: v1.8.0
+
+# ETCD Configuration (Embedded)
+etcd:
+  mode: external # or 'local' if you want Karmada to manage ETCD
+  external:
+    endpoints:
+      - https://etcd-0.etcd.karmada-system.svc.cluster.local:2379
+      - https://etcd-1.etcd.karmada-system.svc.cluster.local:2379
+      - https://etcd-2.etcd.karmada-system.svc.cluster.local:2379
+    caFile: /etc/karmada/pki/etcd/ca.crt
+    certFile: /etc/karmada/pki/etcd/karmada.crt
+    keyFile: /etc/karmada/pki/etcd/karmada.key
+
+# Networking
+service:
+  type: ClusterIP

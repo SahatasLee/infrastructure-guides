@@ -1,0 +1,63 @@
+# SonarQube Helm Chart Values
+# Source: https://github.com/SonarSource/helm-chart-sonarqube/blob/master/charts/sonarqube/values.yaml
+
+edition: community
+
+# Resource Management
+resources:
+  requests:
+    cpu: 500m
+    memory: 2Gi
+  limits:
+    cpu: 1000m
+    memory: 4Gi
+
+# JVM Options
+jvmOpts: "-Xmx2g -Xms2g"
+
+# Elasticsearch Options (Embedded)
+elasticsearch:
+  configureNode: true
+  bootstrapChecks: false
+
+# Persistence
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 20Gi
+  storageClass: "standard"
+
+# Database (Internal PostgreSQL)
+postgresql:
+  enabled: true
+  postgresqlUsername: sonar
+  postgresqlPassword: sonar-password
+  postgresqlDatabase: sonar
+  persistence:
+    enabled: true
+    size: 20Gi
+    storageClass: "standard"
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+# Ingress
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+    - name: sonar.example.com
+      path: /
+  tls: []
+  #  - secretName: sonar-tls
+  #    hosts:
+  #      - sonar.example.com
+
+# Plugins (Optional)
+plugins:
+  install:
+    - "https://github.com/dependency-check/dependency-check-sonar-plugin/releases/download/5.3.3/sonar-dependency-check-plugin-5.3.3.jar"

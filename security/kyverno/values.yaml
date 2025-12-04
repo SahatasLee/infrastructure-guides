@@ -1,0 +1,50 @@
+# Kyverno Helm Chart Values
+# Source: https://github.com/kyverno/kyverno/blob/main/charts/kyverno/values.yaml
+
+# Admission Controller (HA)
+admissionController:
+  replicas: 3
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Background Controller
+backgroundController:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Cleanup Controller
+cleanupController:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+# Reports Controller
+reportsController:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+# Service Monitor (Prometheus)
+serviceMonitor:
+  enabled: true

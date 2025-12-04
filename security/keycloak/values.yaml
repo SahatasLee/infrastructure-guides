@@ -1,0 +1,56 @@
+# Keycloak Helm Chart Values
+# Source: https://github.com/bitnami/charts/blob/main/bitnami/keycloak/values.yaml
+
+# Admin Credentials
+auth:
+  adminUser: admin
+  adminPassword: admin-password
+
+# Production Mode
+production: true
+
+# Proxy Mode (Required for Ingress)
+proxy: edge
+
+# Resource Management
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+# Database (Internal PostgreSQL)
+postgresql:
+  enabled: true
+  auth:
+    username: bn_keycloak
+    password: db-password
+    database: bitnami_keycloak
+  persistence:
+    enabled: true
+    size: 8Gi
+    storageClass: "standard"
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Ingress
+ingress:
+  enabled: true
+  ingressClassName: "nginx"
+  hostname: auth.example.com
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+  tls: true
+  #  - secretName: keycloak-tls
+  #    hosts:
+  #      - auth.example.com
+
+# Replica Count (Set to >1 for HA, requires external DB or HA Postgres)
+replicaCount: 1
