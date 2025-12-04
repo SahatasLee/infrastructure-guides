@@ -20,6 +20,7 @@ Guides are organized by category. Click on the link to view specific documentati
 | :--- | :--- | :--- |
 | **[Istio](./networking/istio)** | Service Mesh for Kubernetes. | `istioctl` / Helm |
 | **[Karmada](./networking/karmada)** | Multi-Cluster Orchestration. | `karmadactl` / Helm |
+| **[Linkerd](./networking/linkerd)** | Ultralight Service Mesh. | `linkerd` / Helm |
 
 ### 🔒 Security
 | Tool | Description | Version/Note |

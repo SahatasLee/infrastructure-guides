@@ -1,0 +1,48 @@
+# Linkerd Control Plane Helm Values
+# Source: https://github.com/linkerd/linkerd2/blob/main/charts/linkerd-control-plane/values.yaml
+
+# High Availability
+enablePodAntiAffinity: true
+controllerReplicas: 3
+proxyInjector:
+  replicas: 3
+spValidator:
+  replicas: 3
+
+# Resource Limits
+controllerResources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 512Mi
+
+# Identity Configuration (Must be provided securely)
+identityTrustAnchorsPEM: |
+  -----BEGIN CERTIFICATE-----
+  ...
+  -----END CERTIFICATE-----
+
+identity:
+  issuer:
+    tls:
+      crtPEM: |
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      keyPEM: |
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
+    crtExpiry: 2024-01-01T00:00:00Z
+
+# Proxy Configuration
+proxy:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 64Mi
+    limits:
+      cpu: 1000m
+      memory: 256Mi
