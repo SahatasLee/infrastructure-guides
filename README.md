@@ -27,7 +27,8 @@ Guides are organized by category. Click on the link to view specific documentati
 | :--- | :--- | :--- |
 | **[Kyverno](./security/kyverno)** | Kubernetes Native Policy Management. | |
 | **[HashiCorp Vault](./security/vault)** | Secrets management and encryption. | HA / Raft |
-| **[Cert-Manager](./security/cert-manager)** | X.509 certificate management for K8s. | |
+| **[Cert-Manager](./security/cert-manager)** | Certificate management. | |
+| **[Let's Encrypt](./security/lets-encrypt)** | Free, automated, and open CA. | Certbot / Cert-Manager |
 | **[Keycloak](./security/keycloak)** | Identity and Access Management. | Bitnami Chart |
 
 ### 🗄️ Data & Messaging
