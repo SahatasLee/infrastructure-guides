@@ -1,0 +1,45 @@
+# ClickHouse Helm Chart Values
+# Source: https://github.com/bitnami/charts/tree/main/bitnami/clickhouse
+
+# Cluster Configuration
+shards: 2
+replicaCount: 2
+
+# Authentication
+auth:
+  username: user
+  password: "secure-password"
+  adminPassword: "admin-password"
+
+# Zookeeper (Required for Replication)
+zookeeper:
+  enabled: true
+  replicaCount: 3
+  auth:
+    enabled: false
+    clientUser: ""
+    clientPassword: ""
+    serverUsers: ""
+    serverPasswords: ""
+
+# Persistence
+persistence:
+  enabled: true
+  size: 20Gi
+  storageClass: "standard"
+
+# Resources
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+
+# Service
+service:
+  type: ClusterIP
+  ports:
+    http: 8123
+    tcp: 9000

@@ -40,6 +40,7 @@ Guides are organized by category. Click on the link to view specific documentati
 | **[PostgreSQL](./data/postgresql)** | Relational database. | CloudNativePG |
 | **[Vitess](./data/vitess)** | Horizontally scalable MySQL. | Vitess Operator |
 | **[NATS](./data/nats)** | High-performance messaging (Pub/Sub, JetStream). | NATS Helm Chart |
+| **[ClickHouse](./data/clickhouse)** | Fast open-source OLAP database. | Bitnami Chart |
 
 ### 💾 Storage
 | Tool | Description | Version/Note |
