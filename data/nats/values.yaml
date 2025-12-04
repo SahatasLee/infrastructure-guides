@@ -1,0 +1,32 @@
+# NATS Helm Chart Values
+# Source: https://github.com/nats-io/k8s/tree/main/helm/charts/nats
+
+config:
+  cluster:
+    enabled: true
+    replicas: 3
+  
+  jetstream:
+    enabled: true
+    memoryStore: 1Gi
+    fileStore: 10Gi
+
+  # Authentication (Example: Token)
+  # auth:
+  #   token: "s3cr3t-t0k3n"
+
+# Resource Limits
+container:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Persistence for JetStream
+# If using file storage, you need PVCs
+# This chart handles PVC creation automatically if configured properly in newer versions,
+# or relies on StatefulSet templates.
+# Check specific chart version docs for PVC configuration.

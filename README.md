@@ -39,6 +39,7 @@ Guides are organized by category. Click on the link to view specific documentati
 | **[Redis](./data/redis)** | In-memory data structure store. | Opstree Operator |
 | **[PostgreSQL](./data/postgresql)** | Relational database. | CloudNativePG |
 | **[Vitess](./data/vitess)** | Horizontally scalable MySQL. | Vitess Operator |
+| **[NATS](./data/nats)** | High-performance messaging (Pub/Sub, JetStream). | NATS Helm Chart |
 
 ### 💾 Storage
 | Tool | Description | Version/Note |
