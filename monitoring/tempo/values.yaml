@@ -1,0 +1,18 @@
+tempo:
+  storage:
+    trace:
+      backend: s3
+      s3:
+        bucket: my-traces
+        endpoint: s3.amazonaws.com
+        access_key: my-access-key
+        secret_key: my-secret-key
+        insecure: false
+
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318

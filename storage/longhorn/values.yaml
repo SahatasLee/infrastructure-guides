@@ -1,0 +1,16 @@
+persistence:
+  defaultClass: true
+  defaultClassReplicaCount: 3
+
+defaultSettings:
+  backupTarget: "" # e.g., s3://backup-bucket@region/
+  backupTargetCredentialSecret: ""
+
+ingress:
+  enabled: true
+  host: longhorn.example.com
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls: true
+  tlsSecret: longhorn-tls

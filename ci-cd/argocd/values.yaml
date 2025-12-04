@@ -1,0 +1,30 @@
+server:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - argocd.example.com
+    tls:
+      - secretName: argocd-tls
+        hosts:
+          - argocd.example.com
+  
+  # Run server without TLS (terminate at Ingress)
+  extraArgs:
+    - --insecure
+
+configs:
+  params:
+    server.insecure: true
+
+# High Availability (Optional)
+controller:
+  replicas: 1
+
+repoServer:
+  replicas: 1
+
+redis:
+  enabled: true

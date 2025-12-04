@@ -1,0 +1,14 @@
+localprovisioner:
+  enabled: true
+  basePath: "/var/openebs/local"
+
+ndm:
+  enabled: true
+
+# Disable legacy/complex engines by default
+jiva:
+  enabled: false
+cstor:
+  enabled: false
+mayastor:
+  enabled: false # Enable if you need NVMe performance

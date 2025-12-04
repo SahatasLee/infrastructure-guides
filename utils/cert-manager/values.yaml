@@ -1,0 +1,23 @@
+installCRDs: true
+
+prometheus:
+  enabled: true
+  servicemonitor:
+    enabled: false # Set to true if Prometheus Operator is installed
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+
+webhook:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+
+cainjector:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi

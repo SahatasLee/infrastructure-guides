@@ -1,0 +1,46 @@
+global:
+  edition: ce
+  hosts:
+    domain: example.com
+    https: true
+  ingress:
+    configureCertmanager: false
+    class: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+
+# Use external Cert-Manager
+certmanager:
+  install: false
+
+# Use external Prometheus (optional)
+prometheus:
+  install: false
+
+# Use external Grafana (optional)
+grafana:
+  install: false
+
+# GitLab Runner
+gitlab-runner:
+  install: true
+  runners:
+    privileged: true
+
+# Resource Tuning (Minimal for testing, increase for prod)
+gitlab:
+  webservice:
+    resources:
+      requests:
+        memory: 1.5Gi
+        cpu: 500m
+  sidekiq:
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+  gitaly:
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 200m

@@ -1,0 +1,25 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: my-cluster
+spec:
+  instances: 3
+  
+  # Example of rolling update strategy:
+  # - unsupervised: automated update of the primary once all replicas have been upgraded
+  # - supervised: requires manual intervention to switchover
+  primaryUpdateStrategy: unsupervised
+
+  storage:
+    size: 10Gi
+    storageClass: standard
+
+  monitoring:
+    enablePodMonitor: true
+
+  bootstrap:
+    initdb:
+      database: app
+      owner: app
+      secret:
+        name: my-cluster-app-auth

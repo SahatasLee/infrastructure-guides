@@ -1,0 +1,49 @@
+operatorNamespace: rook-ceph
+
+cephClusterSpec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v18.2.0
+  
+  dataDirHostPath: /var/lib/rook
+  
+  mon:
+    count: 3
+    allowMultiplePerNode: false
+
+  mgr:
+    count: 2
+    modules:
+      - name: pg_autoscaler
+        enabled: true
+
+  dashboard:
+    enabled: true
+    ssl: true
+
+  storage:
+    useAllNodes: false
+    useAllDevices: false
+    # nodes:
+    #   - name: "node1"
+    #     devices:
+    #       - name: "sdb"
+
+  monitoring:
+    enabled: true
+    createPrometheusRules: true
+
+cephBlockPools:
+  - name: replicated-metadata-pool
+    spec:
+      failureDomain: host
+      replicated:
+        size: 3
+    storageClass:
+      enabled: true
+      name: rook-ceph-block
+      isDefault: true
+      reclaimPolicy: Delete
+      allowVolumeExpansion: true
+      parameters:
+        imageFormat: "2"
+        imageFeatures: layering

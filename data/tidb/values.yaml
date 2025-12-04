@@ -1,0 +1,28 @@
+pd:
+  replicas: 3
+  storageClassName: "standard" # Change to local-storage for prod
+  requests:
+    storage: "10Gi"
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+
+tikv:
+  replicas: 3
+  storageClassName: "standard" # Change to local-storage for prod
+  requests:
+    storage: "20Gi"
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "1000m"
+
+tidb:
+  replicas: 2
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+  service:
+    type: ClusterIP
