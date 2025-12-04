@@ -1,0 +1,57 @@
+server:
+  # Enable the UI
+  ui:
+    enabled: true
+    serviceType: "ClusterIP"
+
+  # Use Raft storage for High Availability (HA)
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: true
+      setNodeId: true
+      config: |
+        ui = true
+        listener "tcp" {
+          tls_disable = 1
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+        }
+        storage "raft" {
+          path = "/vault/data"
+        }
+        service_registration "kubernetes" {}
+
+  # Resource limits for production
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+  # Data Persistence
+  dataStorage:
+    enabled: true
+    size: 10Gi
+    storageClass: null # Use default storage class
+
+  # Audit Logging (Optional but recommended)
+  auditStorage:
+    enabled: false
+    size: 10Gi
+
+# Ingress Configuration (Optional)
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+  hosts:
+    - host: vault.example.com
+      paths: []
+  tls: []
+  #  - secretName: vault-tls
+  #    hosts:
+  #      - vault.example.com

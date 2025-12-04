@@ -29,6 +29,7 @@ Guides are organized by category. Click on the link to view specific documentati
 | Tool | Description | Version/Note |
 | :--- | :--- | :--- |
 | **[Cert-Manager](./utils/cert-manager)** | X.509 certificate management for K8s. | |
+| **[HashiCorp Vault](./utils/vault)** | Secrets management and encryption. | HA / Raft |
 | **[Prometheus/Grafana](./monitoring)** | Monitoring and alerting stack. | |
 | **[Loki](./monitoring/logging)** | Logging stack. | |
 
