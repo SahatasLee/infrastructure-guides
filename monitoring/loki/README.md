@@ -44,7 +44,27 @@ helm upgrade --install loki grafana/loki \
   -f values-loki.yaml
 ```
 
-### 2. Install Grafana Alloy (Collector)
+### 2. Option 2: Simple Scalable Deployment (Recommended for Scale)
+
+This mode separates read and write paths for better scalability.
+
+**Prerequisites for MinIO (Storage Backend):**
+- **Disk Recommendations:**
+    - **MinIO Data:** Use **NVMe SSDs** for high IOPS and low latency. MinIO is performance-sensitive.
+    - **Loki WAL/Ingesters:** Also benefit from fast SSDs for write throughput.
+- **Bucket Setup:** Ensure the following buckets exist (or allow Loki to create them):
+    - `loki-data` (chunks)
+    - `loki-ruler`
+    - `loki-admin`
+
+```bash
+# Install Loki in Simple Scalable mode with MinIO
+helm upgrade --install loki grafana/loki \
+  -n logging \
+  -f values-simple-scalable.yaml
+```
+
+### 3. Install Grafana Alloy (Collector)
 
 ```bash
 # Install Alloy

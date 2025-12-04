@@ -1,0 +1,76 @@
+# Loki Simple Scalable Configuration
+# Chart: grafana/loki
+# Deployment Mode: SimpleScalable
+
+loki:
+  deploymentMode: SimpleScalable
+  
+  auth_enabled: false
+  
+  common:
+    replication_factor: 3
+    storage:
+      s3:
+        endpoint: minio.minio.svc:9000
+        insecure: true
+        bucketnames: loki-data
+        access_key_id: minio
+        secret_access_key: minio123
+        s3forcepathstyle: true
+
+  schemaConfig:
+    configs:
+      - from: "2024-01-01"
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+
+  # Component Configuration
+  ingester:
+    replicas: 3
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: standard # Use fast SSD storage class if available
+
+  querier:
+    replicas: 3
+    max_concurrent: 4
+
+  query_frontend:
+    replicas: 2
+    max_outstanding_per_tenant: 2048
+
+  compactor:
+    working_directory: /var/loki/compactor
+    shared_store: s3
+    compaction_interval: 10m
+    retention_enabled: true
+    retention_delete_delay: 2h
+    retention_delete_worker_count: 150
+
+  ruler:
+    enabled: true
+    replicas: 1
+    storage:
+      type: s3
+      s3:
+        bucketnames: loki-ruler
+
+# MinIO Configuration (Optional - for self-hosted storage)
+minio:
+  enabled: true
+  replicas: 4
+  persistence:
+    size: 50Gi
+    storageClass: standard # CRITICAL: Use NVMe/SSD
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1000m
+    limits:
+      memory: 4Gi
+      cpu: 2000m
