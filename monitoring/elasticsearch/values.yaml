@@ -1,0 +1,48 @@
+# Elasticsearch Helm Chart Values
+# Source: https://github.com/elastic/helm-charts/blob/main/elasticsearch/values.yaml
+
+clusterName: "elasticsearch"
+nodeGroup: "master"
+
+# High Availability: 3 Nodes
+replicas: 3
+
+# Roles: Master + Data + Ingest
+roles:
+  master: "true"
+  data: "true"
+  ingest: "true"
+
+# Resource Management
+resources:
+  requests:
+    cpu: "1000m"
+    memory: "2Gi"
+  limits:
+    cpu: "2000m"
+    memory: "4Gi"
+
+# JVM Heap Size (Set to 50% of memory limit)
+esJavaOpts: "-Xmx2g -Xms2g"
+
+# Storage
+volumeClaimTemplate:
+  accessModes: [ "ReadWriteOnce" ]
+  storageClassName: "standard" # Change this to your storage class
+  resources:
+    requests:
+      storage: 30Gi
+
+# Network
+service:
+  type: ClusterIP
+  port: 9200
+
+# Security (Basic Auth enabled by default in 8.x)
+# Password will be auto-generated in secret 'elasticsearch-master-credentials'
+
+# Anti-Affinity (Ensure HA)
+antiAffinity: "hard"
+
+# Pod Disruption Budget
+maxUnavailable: 1
