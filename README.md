@@ -37,6 +37,7 @@ Guides are organized by category. Click on the link to view specific documentati
 | **[TiDB](./data/tidb)** | Open-source distributed SQL database. | |
 | **[Redis](./data/redis)** | In-memory data structure store. | Opstree Operator |
 | **[PostgreSQL](./data/postgresql)** | Relational database. | CloudNativePG |
+| **[Vitess](./data/vitess)** | Horizontally scalable MySQL. | Vitess Operator |
 
 ### 💾 Storage
 | Tool | Description | Version/Note |
@@ -47,7 +48,6 @@ Guides are organized by category. Click on the link to view specific documentati
 | **[MinIO](./storage/minio)** | High Performance Object Storage (S3). | MinIO Operator |
 | **[Velero](./storage/velero)** | Backup and Disaster Recovery. | AWS/S3 Plugin |
 | **[SeaweedFS](./storage/seaweedfs)** | Distributed file system (S3/Block/File). | |
-| **[Garage S3](./storage/garage)** | Lightweight distributed object storage. | |
 
 ### 🛠️ Utilities & Monitoring
 | Tool | Description | Version/Note |
@@ -61,6 +61,17 @@ Guides are organized by category. Click on the link to view specific documentati
 | **[Elasticsearch](./monitoring/elasticsearch)** | Distributed search and analytics. | Log Monitoring |
 | **[Mimir](./monitoring/mimir)** | Scalable long-term storage for Prometheus. | |
 | **[OpenCost](./monitoring/opencost)** | Kubernetes cost monitoring and allocation. | |
+
+### 🏗️ Infrastructure as Code (IaC)
+| Tool | Description | Version/Note |
+| :--- | :--- | :--- |
+| **[Ansible](./iac/ansible)** | Configuration Management. | `ansible-playbook` |
+| **[Terraform](./iac/terraform)** | Infrastructure Provisioning. | `terraform` |
+
+---
+
+## 🤝 Contributing
+Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for details.
 
 ---
 

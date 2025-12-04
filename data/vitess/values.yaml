@@ -1,0 +1,21 @@
+# Vitess Operator Helm Values
+# Source: https://github.com/vitessio/vitess-helm/blob/main/charts/vitess-operator/values.yaml
+
+operator:
+  image:
+    repository: planetscale/vitess-operator
+    tag: v2.10.0
+  
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  # Enable/Disable specific controllers if needed
+  enableValidatingWebhook: true
+
+# Topology (Global)
+# Usually configured in the VitessCluster CRD, but operator settings can go here.
