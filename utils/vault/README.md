@@ -21,11 +21,11 @@ Vault is deployed in High Availability (HA) mode using Raft integrated storage.
 
 ```mermaid
 graph TD;
-    Client -->|Request| LB(Load Balancer/Ingress);
-    LB --> VaultService[Vault Service];
-    VaultService --> VaultPod1[Vault Pod 1 (Active)];
-    VaultService --> VaultPod2[Vault Pod 2 (Standby)];
-    VaultService --> VaultPod3[Vault Pod 3 (Standby)];
+    Client -->|Request| LB("Load Balancer/Ingress");
+    LB --> VaultService["Vault Service"];
+    VaultService --> VaultPod1["Vault Pod 1 (Active)"];
+    VaultService --> VaultPod2["Vault Pod 2 (Standby)"];
+    VaultService --> VaultPod3["Vault Pod 3 (Standby)"];
     VaultPod1 <-->|Raft| VaultPod2;
     VaultPod2 <-->|Raft| VaultPod3;
     VaultPod1 <-->|Raft| VaultPod3;
