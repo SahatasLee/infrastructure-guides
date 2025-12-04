@@ -1,0 +1,63 @@
+# SeaweedFS Helm Chart Values
+# Source: https://github.com/seaweedfs/seaweedfs/blob/master/k8s/charts/seaweedfs/values.yaml
+
+global:
+  imageRegistry: docker.io
+  repository: chrislusf/seaweedfs
+  tag: "3.59"
+
+# Master (Metadata Manager)
+master:
+  enabled: true
+  replicas: 3
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  persistence:
+    enabled: true
+    size: 4Gi
+    storageClass: "standard"
+
+# Volume Server (Data Storage)
+volume:
+  enabled: true
+  replicas: 3
+  dir: "/data"
+  maxVolumes: "100"
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+  persistence:
+    enabled: true
+    size: 100Gi
+    storageClass: "standard"
+
+# Filer (File System View)
+filer:
+  enabled: true
+  replicas: 2
+  s3:
+    enabled: true # Enable S3 on Filer (or use separate S3 gateway)
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: "standard"
+
+# S3 Gateway (Optional if enabled in Filer)
+s3:
+  enabled: false

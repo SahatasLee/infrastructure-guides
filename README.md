@@ -45,6 +45,8 @@ Guides are organized by category. Click on the link to view specific documentati
 | **[Rook-Ceph](./storage/rook-ceph)** | Ceph storage orchestrator (Block/Object/File). | |
 | **[MinIO](./storage/minio)** | High Performance Object Storage (S3). | MinIO Operator |
 | **[Velero](./storage/velero)** | Backup and Disaster Recovery. | AWS/S3 Plugin |
+| **[SeaweedFS](./storage/seaweedfs)** | Distributed file system (S3/Block/File). | |
+| **[Garage S3](./storage/garage)** | Lightweight distributed object storage. | |
 
 ### 🛠️ Utilities & Monitoring
 | Tool | Description | Version/Note |
