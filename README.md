@@ -18,7 +18,10 @@ Guides are organized by category. Click on the link to view specific documentati
 ### 🌐 Networking
 | Tool | Description | Version/Note |
 | :--- | :--- | :--- |
-| **[Istio](./networking/istio)** | Service Mesh for Kubernetes. | `istioctl` / Helm |
+| **[MetalLB](./networking/metallb)** | Bare metal load-balancer. | |
+| **[Traefik](./networking/traefik)** | Modern HTTP reverse proxy and ingress controller. | |
+| **[Emissary-Ingress](./networking/emissary)** | Envoy-based API Gateway. | |
+| **[Istio](./networking/istio)** | Service Mesh for traffic management, security, and observability. | `istioctl` / Helm |
 | **[Karmada](./networking/karmada)** | Multi-Cluster Orchestration. | `karmadactl` / Helm |
 | **[Linkerd](./networking/linkerd)** | Ultralight Service Mesh. | `linkerd` / Helm |
 

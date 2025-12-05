@@ -1,0 +1,37 @@
+# Traefik Helm Chart Values
+# Source: https://github.com/traefik/traefik-helm-chart
+
+ingressClass:
+  enabled: true
+  isDefaultClass: true
+
+# Service Configuration
+service:
+  type: LoadBalancer
+  # annotations:
+  #   metallb.universe.tf/loadBalancerIPs: 192.168.1.240
+
+# Ports
+ports:
+  web:
+    port: 8000
+    expose: true
+    exposedPort: 80
+    protocol: TCP
+  websecure:
+    port: 8443
+    expose: true
+    exposedPort: 443
+    protocol: TCP
+
+# Dashboard
+ingressRoute:
+  dashboard:
+    enabled: false # Enable to expose dashboard via IngressRoute
+
+# Logs
+logs:
+  general:
+    level: INFO
+  access:
+    enabled: true

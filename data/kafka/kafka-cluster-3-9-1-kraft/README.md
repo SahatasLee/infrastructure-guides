@@ -33,35 +33,18 @@
 
 ### Steps
 
-### Zookeeper Mode (Legacy)
+### KRaft Mode (Zookeeper-less)
 
-1. **Create Namespace** (Optional)
+For a modern, Zookeeper-less deployment using KRaft:
+
+1. **Apply the Node Pool and Cluster:**
    ```bash
-   kubectl create ns kafka
+   kubectl apply -f kafka-node-pool.yml
+   kubectl apply -f kafka-cluster-kraft.yml
    ```
 
-2. **Apply Configuration**
+2. **Verify:**
    ```bash
-   kubectl apply -f kafka-cluster.yaml -n kafka
+   kubectl get kafkanodepool
+   kubectl get kafka kafka-cluster-kraft
    ```
-
-3. **Verify Deployment**
-   ```bash
-   kubectl get pods -n kafka -w
-   ```
-
-## 🔐 User Management
-
-### Create User
-Apply the `kafka-user.yaml` manifest:
-```bash
-kubectl apply -f kafka-user.yaml -n kafka
-```
-
-### Retrieve Password
-The password is stored in a Kubernetes Secret named after the user (e.g., `admin`).
-
-```bash
-kubectl get secret admin -n kafka -o jsonpath='{.data.password}' | base64 ; echo
-```
-

@@ -34,16 +34,16 @@ spec:
         tls: false
         authentication:
          type: scram-sha-512
-        # configuration:
-        #   bootstrap:
-        #     loadBalancerIP: 10.10.1.2
-        #   brokers:
-        #   - broker: 0
-        #     loadBalancerIP: 10.10.1.3
-        #   - broker: 1
-        #     loadBalancerIP: 10.10.1.4
-        #   - broker: 2
-        #     loadBalancerIP: 10.10.1.5
+        configuration:
+          bootstrap:
+            loadBalancerIP: 10.10.1.6
+          brokers:
+          - broker: 0
+            loadBalancerIP: 10.10.1.7
+          - broker: 1
+            loadBalancerIP: 10.10.1.8
+          - broker: 2
+            loadBalancerIP: 10.10.1.9
     authorization:
       type: simple
     config:
@@ -94,7 +94,7 @@ spec:
             - podAffinityTerm:
                 labelSelector:
                   matchLabels:
-                    strimzi.io/cluster: kafka-cluster-poc-3-6-0 
+                    strimzi.io/cluster: kafka-cluster-poc-3-9-1
                     strimzi.io/name: kafka-cluster-poc
                 topologyKey: kubernetes.io/hostname
               weight: 100

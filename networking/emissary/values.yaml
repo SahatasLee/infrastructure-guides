@@ -1,0 +1,27 @@
+# Emissary-Ingress Helm Chart Values
+# Source: https://github.com/emissary-ingress/emissary/tree/master/charts/emissary-ingress
+
+replicaCount: 1
+
+service:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
+
+adminService:
+  create: true
+  type: ClusterIP
+
+# Resource Limits
+resources:
+  limits:
+    cpu: 1000m
+    memory: 400Mi
+  requests:
+    cpu: 200m
+    memory: 100Mi

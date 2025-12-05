@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafdrop
+  labels:
+    app: kafdrop
+spec:
+  ports:
+    - port: 9000
+      targetPort: 9000
+      name: http
+  selector:
+    app: kafdrop
+  type: LoadBalancer

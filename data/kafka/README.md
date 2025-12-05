@@ -90,6 +90,14 @@ kubectl apply -f kafka.yaml -n kafka
 
 ---
 
+## ⚙️ Additional Resources
+
+- **[Best Practices](./best-practices)**: Configuration and usage tips.
+- **[Examples](./examples)**: Client examples in Go, Python, etc.
+- **[Kafdrop](./kafdrop)**: Web UI for Kafka.
+
+---
+
 ## ⚙️ Configuration Details
 
 **Key Configurations** (kafka.yaml)

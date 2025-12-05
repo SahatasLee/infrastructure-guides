@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafdrop
+  labels:
+    app: kafdrop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafdrop
+  template:
+    metadata:
+      labels:
+        app: kafdrop
+    spec:
+      containers:
+      - name: kafdrop
+        image: obsidiandynamics/kafdrop:4.2.0
+        ports:
+        - containerPort: 9000
+        env:
+        - name: KAFKA_BROKERCONNECT
+          value: "kafka-cluster-poc-3-9-1-kafka-bootstrap:9092"
+        - name: JVM_OPTS
+          value: "-Xms32M -Xmx64M"
+        # - name: SCHEMAREGISTRY_CONNECT
+        #   value: "http://localhost:8081"
+        # SASL/SCRAM Configuration
+        # Note: KAFKA_PROPERTIES expects a base64 encoded string of the properties file content.
+        # The content below is base64 for:
+        # security.protocol=SASL_PLAINTEXT
+        # sasl.mechanism=SCRAM-SHA-512
+        # sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="admin" password="admin";
+        #
+        # To generate your own:
+        # echo 'security.protocol=SASL_PLAINTEXT\nsasl.mechanism=SCRAM-SHA-512\nsasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="admin" password="Ohumq4zvaONGniN0BRPz3hKlsjZyWQXa";' | base64
+        - name: KAFKA_PROPERTIES
+          valueFrom:
+            secretKeyRef:
+              name: kafdrop-secret
+              key: kafka.properties
+        - name: CMD_ARGS
+          value: "--topic.createEnabled=false --topic.deleteEnabled=false"
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m"
+        #   requests:
+        #     memory: "64Mi"
+        #     cpu: "100m"

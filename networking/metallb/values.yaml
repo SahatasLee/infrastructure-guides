@@ -1,0 +1,24 @@
+# MetalLB Helm Chart Values
+# Source: https://github.com/metallb/metallb/tree/main/charts/metallb
+
+controller:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+speaker:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  tolerateMaster: true
+
+prometheus:
+  metricsPort: 7472
