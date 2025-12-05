@@ -85,6 +85,7 @@ kubectl create ns kafka
 
 # 3. Install Operator
 helm upgrade --install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
+  --version 0.47.0 \
   -n kafka \
   --set watchAnyNamespace=true
 ```
