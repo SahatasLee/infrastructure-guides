@@ -168,3 +168,5 @@ Common issues and fixes:
 ## 📚 References
 
 - [Strimzi Documentation](https://strimzi.io/docs/operators/latest/full/deploying.html)
+- [Strimzi Examples](https://github.com/strimzi/strimzi-kafka-operator/tree/latest/examples)
+- [Strimzi Metrics](https://github.com/strimzi/strimzi-kafka-operator/tree/0.45.1/examples/metrics)
