@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -18,8 +19,15 @@ import (
 
 func main() {
 	// Load .env file
-	if err := godotenv.Load("../.env"); err != nil {
-		log.Println("No .env file found")
+	envPath := findEnvFile()
+	if envPath != "" {
+		if err := godotenv.Load(envPath); err != nil {
+			log.Printf("Error loading .env file: %v", err)
+		} else {
+			log.Printf("Loaded configuration from %s", envPath)
+		}
+	} else {
+		log.Println("No .env file found, using system environment variables or defaults")
 	}
 
 	// Configuration
@@ -124,3 +132,24 @@ func (x *XDGSCRAMClient) Done() bool {
 
 var SHA256 scram.HashGeneratorFcn = func() hash.Hash { return sha256.New() }
 var SHA512 scram.HashGeneratorFcn = func() hash.Hash { return sha512.New() }
+
+func findEnvFile() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for {
+		path := filepath.Join(dir, ".env")
+		if _, err := os.Stat(path); err == nil {
+			return path
+		}
+
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
+	}
+	return ""
+}

@@ -15,6 +15,7 @@ If your Kafka cluster uses SASL/SCRAM, you need to provide the credentials in th
 kubectl apply -f secret.yaml -n kafka
 kubectl apply -f deployment.yaml -n kafka
 kubectl apply -f service.yaml -n kafka
+kubectl apply -f ingress.yaml -n kafka
 ```
 
 ---

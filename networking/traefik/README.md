@@ -30,11 +30,15 @@ helm repo update
 
 ### 2. Install Traefik
 ```bash
+# 1. Install Traefik CRDs manually (v3.6.0)
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.6/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+
+# 2. Install Traefik
 helm upgrade --install traefik traefik/traefik \
   --namespace traefik \
   --create-namespace \
-  --values values.yaml \
-  --version 24.0.0
+  --version 37.3.0 \
+  --values values.yaml 
 ```
 
 ---

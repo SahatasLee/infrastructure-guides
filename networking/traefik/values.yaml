@@ -27,7 +27,10 @@ ports:
 # Dashboard
 ingressRoute:
   dashboard:
-    enabled: false # Enable to expose dashboard via IngressRoute
+    enabled: true # Enable to expose dashboard via IngressRoute
+    # Custom match rule with host domain
+    matchRule: Host(`traefik-dashboard.example.com`)
+    entryPoints: ["websecure"]
 
 # Logs
 logs:
