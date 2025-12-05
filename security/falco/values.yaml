@@ -1,0 +1,37 @@
+# Falco Helm Chart Values
+# Source: https://github.com/falcosecurity/charts/tree/master/falco
+
+driver:
+  # Options: module (default), ebpf, modern_ebpf
+  # eBPF is recommended for GKE, EKS, AKS
+  kind: ebpf
+
+# Enable Falco Sidekick for better output management and UI
+falcosidekick:
+  enabled: true
+  webui:
+    enabled: true
+    service:
+      type: ClusterIP
+
+# Custom Rules (Example)
+customRules:
+  my_rules.yaml: |-
+    - rule: Terminal shell in container
+      desc: A shell was used as the entrypoint for a container.
+      condition: >
+        spawned_process and container
+        and shell_procs and proc.tty != 0
+        and container_entrypoint
+      output: >
+        Shell opened in container (user=%user.name %container.info shell=%proc.name parent=%proc.pname cmdline=%proc.cmdline)
+      priority: WARNING
+      tags: [container, shell, mitre_execution]
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1024Mi

@@ -25,10 +25,11 @@ Guides are organized by category. Click on the link to view specific documentati
 ### 🔒 Security
 | Tool | Description | Version/Note |
 | :--- | :--- | :--- |
-| **[Kyverno](./security/kyverno)** | Kubernetes Native Policy Management. | |
+| **[Kyverno](./security/kyverno)** | Policy engine for Kubernetes. | Kyverno Helm Chart |
 | **[HashiCorp Vault](./security/vault)** | Secrets management and encryption. | HA / Raft |
 | **[Cert-Manager](./security/cert-manager)** | Certificate management. | |
-| **[Let's Encrypt](./security/lets-encrypt)** | Free, automated, and open CA. | Certbot / Cert-Manager |
+| **[Let's Encrypt](./security/lets-encrypt)** | Automated SSL/TLS certificates. | Certbot / Cert-Manager |
+| **[Falco](./security/falco)** | Runtime security and threat detection. | Falco Helm Chart |
 | **[Keycloak](./security/keycloak)** | Identity and Access Management. | Bitnami Chart |
 
 ### 🗄️ Data & Messaging
