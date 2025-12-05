@@ -1,29 +1,32 @@
 # Kube-Prometheus-Stack POC Checklist
 
-## Phase 1: Infrastructure
+## 1. Infrastructure Setup
+- [ ] **Namespace Created**: `monitoring` namespace exists.
+- [ ] **Helm Repo Added**: Prometheus Community repo added.
 
-- [ ] **Pod Status**: Prometheus, Alertmanager, Grafana, Node-Exporter, Kube-State-Metrics pods are `Running`.
-- [ ] **ServiceMonitors**: Default ServiceMonitors (kubelet, apiserver, etc.) exist.
+## 2. Deployment & Installation
+- [ ] **Install Command**: Helm install executed successfully.
+- [ ] **Pods Ready**: All pods (Prometheus, Grafana, Alertmanager, Operator) are `Running`.
 
-## Phase 2: Access
+## 3. Configuration
+- [ ] **Persistence**: PVCs are bound for Prometheus and Grafana.
+- [ ] **Ingress**: Grafana Ingress is created and has an address (if enabled).
 
-- [ ] **Grafana**: Accessible via Port-Forward/Ingress.
-- [ ] **Prometheus**: Accessible via Port-Forward/Ingress.
-- [ ] **Alertmanager**: Accessible via Port-Forward/Ingress.
+## 4. Functional Testing
+- [ ] **Grafana Access**: Can login to Grafana.
+- [ ] **Dashboards**: Default dashboards (Node Exporter, Kubernetes) are visible and showing data.
+- [ ] **Prometheus Access**: Can access Prometheus UI (port-forward 9090).
+- [ ] **Target Discovery**: Prometheus shows targets (Nodes, Kubelet, etc.) as UP.
+- [ ] **Alertmanager**: Can access Alertmanager UI (port-forward 9093).
 
-## Phase 3: Functional Testing
+## 5. Troubleshooting
+- [ ] **Connection Timeout**: If `curl` hangs, check if `grafana.example.com` resolves to the **Traefik LoadBalancer IP** (`kubectl get svc -n traefik`).
+- [ ] **404 Not Found**: If you get a 404, check if the `Ingress` exists and has the correct `ingressClassName: traefik`.
+- [ ] **No Data in Dashboards**:
+    - Check if `node-exporter` pods are running.
+    - Check if the underlying metric exists: `node_cpu_seconds_total`.
+    - Check if recording rules are firing: `cluster:node_cpu:ratio_rate5m`.
+    - If `cluster=""` returns nothing, try removing the `{cluster=""}` filter, as your cluster might not have a name label configured.
 
-- [ ] **Metrics Collection**:
-    - [ ] In Prometheus UI, query `up`.
-    - [ ] Verify targets (Nodes, Kubelet, CoreDNS) are `1` (UP).
-- [ ] **Dashboards**:
-    - [ ] In Grafana, verify default dashboards (e.g., "Kubernetes / Compute Resources / Cluster") show data.
-- [ ] **Alerting**:
-    - [ ] Verify default alerts are present in Prometheus "Alerts" tab.
-    - [ ] (Optional) Trigger a test alert (e.g., Watchdog) and verify it reaches Alertmanager.
-
-## Phase 4: Operations
-
-- [ ] **Persistence**:
-    - [ ] Restart Prometheus pod.
-    - [ ] Verify historical data is preserved.
+## 6. Cleanup
+- [ ] **Uninstall**: `helm uninstall kube-prometheus-stack -n monitoring` executed.
