@@ -24,5 +24,6 @@ tmp/
 
 # Secrets (Precautionary)
 secrets.yaml
+secret.yaml
 *.secret.yaml
 .env

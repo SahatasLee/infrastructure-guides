@@ -95,6 +95,7 @@ kubectl apply -f kafka.yaml -n kafka
 - **[Best Practices](./best-practices)**: Configuration and usage tips.
 - **[Examples](./examples)**: Client examples in Go, Python, etc.
 - **[Kafdrop](./kafdrop)**: Web UI for Kafka.
+- **[Kafbat UI](./kafbat-ui)**: Modern Web UI for Kafka (Fork of Kafka UI).
 
 ---
 

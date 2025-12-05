@@ -1,0 +1,27 @@
+# Kafbat UI Helm Chart Values
+# Source: https://github.com/kafbat/helm-charts
+
+yamlApplicationConfig:
+  kafka:
+    clusters:
+      - name: kafka-cluster-poc
+        bootstrapServers: kafka-cluster-poc-3-9-1-kafka-bootstrap:9092
+        properties:
+          security.protocol: SASL_PLAINTEXT
+          sasl.mechanism: SCRAM-SHA-512
+          # Replace <PASSWORD> with the actual password
+          sasl.jaas.config: org.apache.kafka.common.security.scram.ScramLoginModule required username="admin" password="<PASSWORD>";
+  auth:
+    type: DISABLED
+  management:
+    health:
+      ldap:
+        enabled: false
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
