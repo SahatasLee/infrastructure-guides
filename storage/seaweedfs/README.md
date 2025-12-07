@@ -35,7 +35,7 @@ helm upgrade --install seaweedfs seaweedfs/seaweedfs \
   --namespace seaweedfs \
   --create-namespace \
   --values values.yaml \
-  --version 3.59
+  --version 4.0.401
 ```
 
 ---
@@ -60,6 +60,24 @@ Key configurations in `values.yaml`:
 Forward the port:
 ```bash
 kubectl port-forward svc/seaweedfs-s3 8333:8333 -n seaweedfs
+```
+
+### Access Filer UI
+Forward the port:
+```bash
+kubectl port-forward svc/seaweedfs-filer 8888:8888 -n seaweedfs
+```
+
+### Access Volume UI
+Forward the port:
+```bash
+kubectl port-forward svc/seaweedfs-volume 8080:8080 -n seaweedfs
+```
+
+### Access Master UI
+Forward the port:
+```bash
+kubectl port-forward svc/seaweedfs-master 9333:9333 -n seaweedfs
 ```
 
 Configure AWS CLI:

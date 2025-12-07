@@ -1,12 +1,7 @@
-# SeaweedFS Helm Chart Values
-# Source: https://github.com/seaweedfs/seaweedfs/blob/master/k8s/charts/seaweedfs/values.yaml
-
-global:
-  imageRegistry: docker.io
-  repository: chrislusf/seaweedfs
+image:
+  registry: docker.io
   tag: "3.59"
 
-# Master (Metadata Manager)
 master:
   enabled: true
   replicas: 3
@@ -17,47 +12,115 @@ master:
     limits:
       cpu: 500m
       memory: 512Mi
-  persistence:
-    enabled: true
+  
+  # Persistence - Migrated to v4 structure
+  data:
+    type: "persistentVolumeClaim"
     size: 4Gi
-    storageClass: "standard"
+    storageClass: "vks-storage-policy-latebinding"
+  
+  # Log Persistence - Fix hostPath violation
+  logs:
+    type: "emptyDir"
 
-# Volume Server (Data Storage)
+  # Security Contexts - Migrated to v4 structure (requires enabled: true)
+  podSecurityContext:
+    enabled: true
+    runAsNonRoot: true
+    runAsUser: 1001
+    runAsGroup: 1001
+    fsGroup: 1001
+    seccompProfile:
+      type: RuntimeDefault
+  
+  containerSecurityContext:
+    enabled: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+    runAsNonRoot: true
+
 volume:
   enabled: true
   replicas: 3
-  dir: "/data"
-  maxVolumes: "100"
+  # old 'dir' is likely invalid now, using dataDirs
+  
   resources:
     requests:
-      cpu: 500m
-      memory: 1Gi
+      cpu: 100m
+      memory: 256Mi
     limits:
       cpu: 2000m
       memory: 4Gi
-  persistence:
-    enabled: true
-    size: 100Gi
-    storageClass: "standard"
+  
+  # Persistence - Migrated to v4 structure
+  dataDirs:
+    - name: data
+      type: "persistentVolumeClaim"
+      size: 10Gi
+      storageClass: "vks-storage-policy-latebinding"
+      maxVolumes: 100
 
-# Filer (File System View)
+  # Logs
+  logs:
+    type: "emptyDir"
+
+  # Security
+  podSecurityContext:
+    enabled: true
+    runAsNonRoot: true
+    runAsUser: 1001
+    runAsGroup: 1001
+    fsGroup: 1001
+    seccompProfile:
+      type: RuntimeDefault
+  
+  containerSecurityContext:
+    enabled: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+    runAsNonRoot: true
+
 filer:
   enabled: true
   replicas: 2
   s3:
-    enabled: true # Enable S3 on Filer (or use separate S3 gateway)
+    enabled: true
+  
   resources:
     requests:
       cpu: 200m
       memory: 256Mi
     limits:
       cpu: 1000m
-      memory: 1Gi
-  persistence:
-    enabled: true
+      memory: 4Gi
+      
+  # Persistence - Migrated to v4 structure
+  data:
+    type: "persistentVolumeClaim"
     size: 10Gi
-    storageClass: "standard"
+    storageClass: "vks-storage-policy-latebinding"
+  
+  logs:
+    type: "emptyDir"
 
-# S3 Gateway (Optional if enabled in Filer)
+  # Security
+  podSecurityContext:
+    enabled: true
+    runAsNonRoot: true
+    runAsUser: 1001
+    runAsGroup: 1001
+    fsGroup: 1001
+    seccompProfile:
+      type: RuntimeDefault
+  
+  containerSecurityContext:
+    enabled: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+    runAsNonRoot: true
+
 s3:
   enabled: false
