@@ -51,35 +51,15 @@ If you are using `kube-prometheus-stack` (Prometheus Operator), you need a `PodM
 
 **Create `pod-monitor.yaml`:**
 
-```yaml
-apiVersion: monitoring.coreos.com/v1
-kind: PodMonitor
-metadata:
-  name: cluster-operator-metrics
-  labels:
-    app: strimzi
-spec:
-  selector:
-    matchLabels:
-      strimzi.io/kind: Kafka
-  namespaceSelector:
-    matchNames:
-      - kafka
-  podMetricsEndpoints:
-  - path: /metrics
-    port: tcp-prometheus
-    relabelings:
-    - separator: ;
-      regex: __meta_kubernetes_pod_label_(.+)
-      replacement: $1
-      action: labelmap
-```
+Don't forget to add release label to the pod-monitor.yaml if you are using `kube-prometheus-stack`.
 
 Apply it to the **Prometheus namespace** (e.g., `monitoring`). This ensures Prometheus can find the `PodMonitor` resource, and the `namespaceSelector` within it tells Prometheus to look for pods in the `kafka` namespace.
 
 ```bash
 kubectl apply -f pod-monitor.yaml -n monitoring
 ```
+
+For more information, see the [kube-prometheus-stack documentation](https://github.com/prometheus-operator/kube-prometheus-stack) and [Strimzi Metrics Examples](https://github.com/strimzi/strimzi-kafka-operator/tree/0.49.1/examples/metrics).
 
 > **Note:** You can also deploy it in the `kafka` namespace if your Prometheus is configured to select PodMonitors from all namespaces (check `podMonitorNamespaceSelector` in your Prometheus CR).
 
