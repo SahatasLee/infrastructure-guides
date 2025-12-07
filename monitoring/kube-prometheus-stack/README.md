@@ -2,6 +2,7 @@
 
 > **Description:** A collection of Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator.
 > **Chart:** `prometheus-community/kube-prometheus-stack`
+> **Documentation:** [MONITORING_CRDS.md](../MONITORING_CRDS.md) - Deep dive into ServiceMonitor, PodMonitor, and PrometheusRule.
 
 ---
 
