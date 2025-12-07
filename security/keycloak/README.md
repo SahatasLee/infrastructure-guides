@@ -22,19 +22,10 @@
 
 ## 🚀 Installation
 
-### 1. Add Helm Repository
-```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-```
+### 1. Deploy Keycloak
 
-### 2. Install Keycloak
 ```bash
-helm upgrade --install keycloak bitnami/keycloak \
-  --namespace keycloak \
-  --create-namespace \
-  --values values.yaml \
-  --version 16.0.0
+kubectl apply -f keycloak.yaml -f postgresql.yaml
 ```
 
 ---
