@@ -1,0 +1,48 @@
+# Default values for keda.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  keda:
+    repository: ghcr.io/kedacore/keda
+    tag: 2.16.1
+  metricsAdapter:
+    repository: ghcr.io/kedacore/keda-metrics-apiserver
+    tag: 2.16.1
+
+# Operational settings
+operator:
+  replicaCount: 1
+
+metricsServer:
+  replicaCount: 1
+
+# Security Contexts (Adjust as needed for Pod Security Standards)
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+
+resources:
+  operator:
+    limits:
+      cpu: 1000m
+      memory: 1000Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  metricsServer:
+    limits:
+      cpu: 1000m
+      memory: 1000Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi

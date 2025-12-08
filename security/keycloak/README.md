@@ -28,6 +28,12 @@
 kubectl apply -f keycloak.yaml -f postgresql.yaml
 ```
 
+### 2. Deploy Ingress
+
+```bash
+kubectl apply -f ingress.yaml
+```
+
 ---
 
 ## ⚙️ Configuration
