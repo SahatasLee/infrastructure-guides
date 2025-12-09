@@ -68,6 +68,7 @@ Guides are organized by category. Click on the link to view specific documentati
 | **[Elasticsearch](./monitoring/elasticsearch)** | Distributed search and analytics. | Log Monitoring |
 | **[Mimir](./monitoring/mimir)** | Scalable long-term storage for Prometheus. | |
 | **[OpenCost](./monitoring/opencost)** | Kubernetes cost monitoring and allocation. | |
+| **[k9s](./utils/k9s)** | Kubernetes CLI to manage your clusters in style. | |
 
 ### 🏗️ Infrastructure as Code (IaC)
 | Tool | Description | Version/Note |
@@ -123,5 +124,7 @@ infrastructure-guides/
 │   ├── rook-ceph/
 │   └── velero/
 └── templates/
-    └── _GUIDE_TEMPLATE.md  
+    └── _GUIDE_TEMPLATE.md
+└── utils/
+    └── k9s/  
 ```
