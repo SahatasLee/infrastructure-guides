@@ -56,7 +56,7 @@ Guides are organized by category. Click on the link to view specific documentati
 | **[Velero](./storage/velero)** | Backup and Disaster Recovery. | AWS/S3 Plugin |
 | **[SeaweedFS](./storage/seaweedfs)** | Distributed file system (S3/Block/File). | |
 
-### 🛠️ Utilities & Monitoring
+### Monitoring
 | Tool | Description | Version/Note |
 | :--- | :--- | :--- |
 | **[Kube-Prometheus-Stack](./monitoring/kube-prometheus-stack)** | Full monitoring stack. | |
@@ -67,6 +67,10 @@ Guides are organized by category. Click on the link to view specific documentati
 | **[Thanos](./monitoring/thanos)** | Highly available Prometheus metrics. | |
 | **[Elasticsearch](./monitoring/elasticsearch)** | Distributed search and analytics. | Log Monitoring |
 | **[Mimir](./monitoring/mimir)** | Scalable long-term storage for Prometheus. | |
+
+## Utilities
+| Tool | Description | Version/Note |
+| :--- | :--- | :--- |
 | **[OpenCost](./monitoring/opencost)** | Kubernetes cost monitoring and allocation. | |
 | **[k9s](./utils/k9s)** | Kubernetes CLI to manage your clusters in style. | |
 
