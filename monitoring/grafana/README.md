@@ -47,6 +47,43 @@ helm upgrade --install grafana grafana/grafana \
 
 ---
 
+### Option 2: Install with External Database (PostgreSQL)
+
+Use an external database for stateless Grafana pods.
+
+**1. Prepare PostgreSQL**
+```sql
+CREATE DATABASE grafana;
+CREATE USER grafana WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE grafana TO grafana;
+```
+
+**2. Create Secret**
+```sh
+kubectl create secret generic grafana-db-secret --from-literal=password='YOUR_DB_PASSWORD'
+```
+
+**3. Update `values.yaml`**
+```yaml
+grafana.ini:
+  database:
+    type: postgres
+    host: postgres-cluster-rw.database.svc.cluster.local:5432
+    name: grafana
+    user: grafana
+    password: password
+    ssl_mode: disable
+```
+
+**4. Install with Helm**
+```bash
+helm upgrade --install grafana grafana/grafana \
+  -n monitoring \
+  -f values.yaml
+```
+
+---
+
 ## ⚙️ Configuration Details
 
 **Key Configurations** (values.yaml)

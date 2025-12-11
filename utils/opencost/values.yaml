@@ -1,16 +1,44 @@
 # OpenCost Helm Chart Values
 # Source: https://github.com/opencost/opencost-helm-chart/blob/main/charts/opencost/values.yaml
 
+
+# Pod Security Context (Root Level)
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  fsGroup: 1001
+  seccompProfile:
+    type: RuntimeDefault
+
+# Extra Volumes (Root Level)
+extraVolumes:
+  - name: ui-var-www
+    emptyDir: {}
+  - name: ui-tmp
+    emptyDir: {}
+
 opencost:
   # Prometheus Configuration
   prometheus:
-    external:
+    internal:
+      # -- Use in-cluster Prometheus
       enabled: true
-      url: "http://prometheus-operated.monitoring:9090" # Update with your Prometheus URL
+      # -- Service name of in-cluster Prometheus
+      serviceName: kube-prometheus-stack-prometheus
+      # -- Namespace of in-cluster Prometheus
+      namespaceName: monitoring
+      # -- Service port of in-cluster Prometheus
+      port: 9090
+      # -- Path to access the Prometheus API, this is neccesary if the Prometheus server is behind a reverse proxy(mimir) or has a different path.
+      path: "/"
+      # -- Scheme to use for in-cluster Prometheus
+      scheme: http
+    # external:
+    #   enabled: true
+    #   url: "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090" # Update with your Prometheus URL
 
   # Exporter (Metrics for Prometheus to scrape)
   exporter:
-    enabled: true
     resources:
       requests:
         cpu: 10m
@@ -18,6 +46,14 @@ opencost:
       limits:
         cpu: 100m
         memory: 128Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault
 
   # UI Configuration
   ui:
@@ -29,26 +65,34 @@ opencost:
       limits:
         cpu: 100m
         memory: 128Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault
+    extraVolumeMounts:
+      - name: ui-var-www
+        mountPath: /var/www
+      - name: ui-tmp
+        mountPath: /tmp
+    ingress:
+      enabled: true
+      ingressClassName: "traefik"
+      hosts:
+        - host: opencost.example.com
+          paths:
+            - /
+              # pathType: ImplementationSpecific
+      tls: []
+      #  - secretName: opencost-tls
+      #    hosts:
+      #      - opencost.example.com
+
 
   # Cost Model Configuration
   customPricing:
     enabled: false
     # configmapName: my-pricing-config
-
-service:
-  type: ClusterIP
-  port: 9090
-  annotations: {}
-
-ingress:
-  enabled: false
-  className: "nginx"
-  hosts:
-    - host: opencost.example.com
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: opencost-tls
-  #    hosts:
-  #      - opencost.example.com

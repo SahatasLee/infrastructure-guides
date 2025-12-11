@@ -71,7 +71,7 @@ Guides are organized by category. Click on the link to view specific documentati
 ## Utilities
 | Tool | Description | Version/Note |
 | :--- | :--- | :--- |
-| **[OpenCost](./monitoring/opencost)** | Kubernetes cost monitoring and allocation. | |
+| **[OpenCost](./utils/opencost)** | Kubernetes cost monitoring and allocation. | |
 | **[k9s](./utils/k9s)** | Kubernetes CLI to manage your clusters in style. | |
 
 ### 🏗️ Infrastructure as Code (IaC)
