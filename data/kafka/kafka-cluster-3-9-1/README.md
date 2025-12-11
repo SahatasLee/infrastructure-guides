@@ -65,3 +65,29 @@ The password is stored in a Kubernetes Secret named after the user (e.g., `admin
 kubectl get secret admin -n kafka -o jsonpath='{.data.password}' | base64 ; echo
 ```
 
+## Monitoring
+ 
+Monitoring is handled via the Prometheus Operator using `PodMonitor` resources.
+ 
+### Prerequisites
+- [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) or Prometheus Operator installed.
+- Ensure your `PodMonitor` has the correct labels to be discovered by Prometheus (default: `release: kube-prometheus-stack`).
+ 
+### Enable Monitoring
+ 
+Apply the `pod-monitor.yaml` to create `PodMonitor` resources for:
+- Cluster Operator
+- Entity Operator (User/Topic)
+- Kafka Brokers
+- Zookeeper Nodes
+ 
+```bash
+kubectl apply -f pod-monitor.yaml -n kafka
+```
+ 
+### Verify Targets
+ 
+Check your Prometheus dashboard under **Status -> Targets**. You should see targets named:
+- `podMonitor/kafka/cluster-operator-metrics/0`
+- `podMonitor/kafka/entity-operator-metrics/0`
+- `podMonitor/kafka/kafka-resources-metrics/0`

@@ -2,6 +2,8 @@
 
 This guide explains how to monitor your Strimzi Kafka cluster using Grafana. We will cover enabling metrics in Kafka, ensuring Prometheus is scraping them, and importing dashboards into Grafana.
 
+[Strimzi Metrics Examples](https://github.com/strimzi/strimzi-kafka-operator/tree/main/examples/metrics)
+
 ## 📋 Prerequisites
 
 - [ ] **Kubernetes Cluster** with Strimzi Operator installed.
@@ -41,7 +43,7 @@ spec:
     # ...
 ```
 
-> **Note:** The ConfigMap `kafka-metrics` typically comes with Strimzi examples or can be created manually. See [Strimzi Metrics Examples](https://github.com/strimzi/strimzi-kafka-operator/tree/latest/examples/metrics).
+> **Note:** The ConfigMap `kafka-metrics` typically comes with Strimzi examples or can be created manually. See [Strimzi Metrics Examples](https://github.com/strimzi/strimzi-kafka-operator/tree/main/examples/metrics).
 
 ---
 

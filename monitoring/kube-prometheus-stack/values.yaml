@@ -23,6 +23,11 @@ grafana:
 
 prometheus:
   prometheusSpec:
+    # External labels to add to any time series or 
+    # alerts when communicating with external systems
+    externalLabels:
+      cluster: lnwbass-cluster
+      env: poc
     retention: 7d
     storageSpec:
       volumeClaimTemplate:
@@ -59,3 +64,5 @@ nodeExporter:
 kubeStateMetrics:
   enabled: true
 
+defaultRules:
+  create: true

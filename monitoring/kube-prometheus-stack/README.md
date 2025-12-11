@@ -38,7 +38,7 @@ helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheu
   --namespace monitoring \
   --create-namespace \
   --values values.yaml \
-  --version 56.0.0
+  --version 80.2.0
 ```
 
 ---
