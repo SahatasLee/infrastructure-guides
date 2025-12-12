@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kafka-perf-test
+  labels:
+    app: kafka-perf-test
+spec:
+  containers:
+    - name: kafka
+      image: apache/kafka:3.9.0
+      command:
+        - "/bin/bash"
+        - "-c"
+        - "sleep infinity"
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "500m"
+        limits:
+          memory: "1Gi"
+          cpu: "1000m"
+  restartPolicy: Never

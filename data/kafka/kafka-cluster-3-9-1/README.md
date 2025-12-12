@@ -62,7 +62,7 @@ kubectl apply -f kafka-user.yaml -n kafka
 The password is stored in a Kubernetes Secret named after the user (e.g., `admin`).
 
 ```bash
-kubectl get secret admin -n kafka -o jsonpath='{.data.password}' | base64 ; echo
+kubectl get secret admin -n kafka -o jsonpath='{.data.password}' | base64 -d ; echo
 ```
 
 ## Monitoring

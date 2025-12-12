@@ -19,7 +19,7 @@ spec:
         host: "*"
       - resource:
           type: group
-          name: test-group
+          name: "*"
           patternType: literal
         operations:
           - All
