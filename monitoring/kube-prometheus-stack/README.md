@@ -84,8 +84,57 @@ spec:
 
 ---
 
+---
+
+## ❓ Troubleshooting
+
+### Node Exporter not starting (PodSecurity Issue)
+If `node-exporter` pods are failing to start with `violates PodSecurity "restricted:latest"`, it means the namespace has a restricted policy preventing privileged pods.
+
+**Fix:** Label the namespace to allow privileged pods.
+```bash
+kubectl label --overwrite ns monitoring pod-security.kubernetes.io/enforce=privileged
+kubectl label --overwrite ns monitoring pod-security.kubernetes.io/audit=privileged
+kubectl label --overwrite ns monitoring pod-security.kubernetes.io/warn=privileged
+```
+
+---
+
+### Node Exporter Connection Timeout
+If Prometheus shows `context deadline exceeded` or `Connection timed out` for `node-exporter` targets (port 9100), the Host Firewall is likely checking the connection.
+
+**Fix:** Disable `hostNetwork` to use the Pod Overlay Network.
+1. Update `values.yaml`:
+   ```yaml
+   nodeExporter:
+     hostNetwork: false
+     service:
+       port: 9100
+       targetPort: 9100
+   ```
+2. **Force Update DaemonSet:** Helm might not apply `hostNetwork` changes to existing DaemonSets.
+   ```bash
+   kubectl delete ds kube-prometheus-stack-prometheus-node-exporter -n monitoring
+   helm upgrade --install ...
+   # OR
+   kubectl patch ds kube-prometheus-stack-prometheus-node-exporter -n monitoring --patch '{"spec": {"template": {"spec": {"hostNetwork": false, "hostPID": false}}}}'
+   ```
+
+---
+
 ## 🧹 Cleanup
 
 ```bash
 helm uninstall kube-prometheus-stack -n monitoring
+# Delete CRDs
+kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
+kubectl delete crd alertmanagers.monitoring.coreos.com
+kubectl delete crd podmonitors.monitoring.coreos.com
+kubectl delete crd probes.monitoring.coreos.com
+kubectl delete crd prometheusagents.monitoring.coreos.com
+kubectl delete crd prometheuses.monitoring.coreos.com
+kubectl delete crd prometheusrules.monitoring.coreos.com
+kubectl delete crd scrapeconfigs.monitoring.coreos.com
+kubectl delete crd servicemonitors.monitoring.coreos.com
+kubectl delete crd thanosrulers.monitoring.coreos.comv
 ```
