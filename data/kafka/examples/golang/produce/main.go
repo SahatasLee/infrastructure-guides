@@ -48,9 +48,23 @@ func main() {
 		password = "admin"
 	}
 
+	acksEnv := os.Getenv("KAFKA_PRODUCER_ACKS")
+	var requiredAcks sarama.RequiredAcks
+	switch acksEnv {
+	case "0":
+		requiredAcks = sarama.NoResponse
+	case "1":
+		requiredAcks = sarama.WaitForLocal
+	case "all":
+		requiredAcks = sarama.WaitForAll
+	default:
+		// Default to WaitForAll for safety
+		requiredAcks = sarama.WaitForAll
+	}
+
 	config := sarama.NewConfig()
 	config.Producer.Return.Successes = true
-	config.Producer.RequiredAcks = sarama.WaitForAll
+	config.Producer.RequiredAcks = requiredAcks
 	config.Producer.Retry.Max = 5
 
 	// SASL/SCRAM Configuration

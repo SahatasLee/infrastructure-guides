@@ -17,7 +17,7 @@ spec:
     readinessProbe:
       initialDelaySeconds: 15
       periodSeconds: 10
-      timeoutSeconds: 300
+      timeoutSeconds: 15
     livenessProbe:
       initialDelaySeconds: 15
       periodSeconds: 10
