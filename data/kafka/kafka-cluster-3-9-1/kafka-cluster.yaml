@@ -14,6 +14,14 @@ spec:
     # jvmOptions:
     #   -Xms: 1g
     #   -Xmx: 1g
+    readinessProbe:
+      initialDelaySeconds: 15
+      periodSeconds: 10
+      timeoutSeconds: 300
+    livenessProbe:
+      initialDelaySeconds: 15
+      periodSeconds: 10
+      timeoutSeconds: 15
     resources:
       requests:
         cpu: "1"
@@ -27,23 +35,23 @@ spec:
         type: internal
         tls: false
         authentication:
-         type: scram-sha-512
+          type: scram-sha-512
       - name: external
         port: 9094
         type: loadbalancer
         tls: false
         authentication:
-         type: scram-sha-512
+          type: scram-sha-512
         configuration:
           bootstrap:
             loadBalancerIP: 10.10.1.6
           brokers:
-          - broker: 0
-            loadBalancerIP: 10.10.1.7
-          - broker: 1
-            loadBalancerIP: 10.10.1.8
-          - broker: 2
-            loadBalancerIP: 10.10.1.9
+            - broker: 0
+              loadBalancerIP: 10.10.1.7
+            - broker: 1
+              loadBalancerIP: 10.10.1.8
+            - broker: 2
+              loadBalancerIP: 10.10.1.9
     authorization:
       type: simple
     config:
@@ -52,7 +60,7 @@ spec:
       # max.connections.per.ip: 1000
       # --- Replication ---
       default.replication.factor: 3
-      min.insync.replicas: 3
+      min.insync.replicas: 2
       offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 3
       transaction.state.log.min.isr: 2
@@ -77,38 +85,40 @@ spec:
     storage:
       type: jbod
       volumes:
-      - id: 0
-        type: persistent-claim
-        size: 10Gi
-        class: vks-storage-policy-latebinding
-        deleteClaim: false
+        - id: 0
+          type: persistent-claim
+          size: 20Gi
+          class: vks-storage-policy-latebinding
+          deleteClaim: false
     template:
       kafkaContainer:
         env:
-        - name: TZ
-          value: "Asia/Bangkok"
+          - name: TZ
+            value: "Asia/Bangkok"
       pod:
         affinity:
           podAntiAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:
-            - podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    strimzi.io/cluster: kafka-cluster-poc-3-9-1
-                    strimzi.io/name: kafka-cluster-poc
-                topologyKey: kubernetes.io/hostname
-              weight: 100
+              - podAffinityTerm:
+                  labelSelector:
+                    matchLabels:
+                      strimzi.io/cluster: kafka-cluster-poc-3-9-1
+                      strimzi.io/name: kafka-cluster-poc
+                  topologyKey: kubernetes.io/hostname
+                weight: 100
   kafkaExporter:
     topicRegex: ".*"
     groupRegex: ".*"
     # Ensure it restarts automatically if it hangs
     livenessProbe:
       initialDelaySeconds: 15
+      # initialDelaySeconds: 120
       periodSeconds: 10
       timeoutSeconds: 15
     # Ensure traffic isn't sent until it's ready
     readinessProbe:
       initialDelaySeconds: 15
+      # initialDelaySeconds: 120
       periodSeconds: 10
       timeoutSeconds: 300
     # Prevent crashing on large clusters
@@ -154,19 +164,19 @@ spec:
     template:
       zookeeperContainer:
         env:
-        - name: TZ
-          value: "Asia/Bangkok"
+          - name: TZ
+            value: "Asia/Bangkok"
       pod:
         affinity:
           podAntiAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:
-            - podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    strimzi.io/cluster: kafka-cluster-poc-3-9-1
-                    strimzi.io/name: kafka-cluster-zookeeper
-                topologyKey: kubernetes.io/hostname
-              weight: 100
+              - podAffinityTerm:
+                  labelSelector:
+                    matchLabels:
+                      strimzi.io/cluster: kafka-cluster-poc-3-9-1
+                      strimzi.io/name: kafka-cluster-zookeeper
+                  topologyKey: kubernetes.io/hostname
+                weight: 100
   entityOperator:
     topicOperator:
       logging:

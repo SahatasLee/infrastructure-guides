@@ -69,3 +69,42 @@
 - **ประสิทธิภาพสูงมาก (High Performance):** ค่าเฉลี่ย Latency ที่ **2.7 ms** ถือว่ายอดเยี่ยมสำหรับการใช้งาน Real-time
 - **ความเสถียร (Stability):** ค่า P99 ที่ 24ms แสดงว่าระบบมีความนิ่งพอสมควร อาจมีกระตุกบ้างเล็กน้อย (Jitter) แต่ยังอยู่ในเกณฑ์ดีเยี่ยมสำหรับการใช้งานทั่วไป
 - **สรุปภาพรวม:** Cluster นี้พร้อมสำหรับการใช้งานที่ต้องการความไวสูง (Low Latency Workloads) ครับ
+
+## 4. Stress Test Results (ทดสอบขีดจำกัด)
+
+**Scenario:**
+- **Clients:** 5 Concurrent Pods (Scaled Deployment)
+- **Tool:** `stress-test.sh` (Auto-generated)
+- **Target:** Max Cluster Throughput
+
+**ผลลัพธ์ (Results):**
+
+| Metric | Value (Total) | Note |
+|--------|---------------|------|
+| **Total Throughput** | **68.20 MB/s** | (Peak Load) |
+| **Total Records/sec** | **~69,828 records/sec** | |
+| **Per Pod Avg** | **~13.6 MB/s** | (ดรอปลงจาก 26 MB/s เมื่อรันตัวเดียว) |
+
+### บทวิเคราะห์ (Analysis in Thai):
+
+1.  **System Capacity:** ระบบสามารถรองรับได้สูงสุดประมาณ **68 MB/s** (เมื่อเพิ่ม Client เป็น 5 ตัว)
+2.  **Bottleneck:**
+    - เมื่อรัน 1 Pod ได้ **26 MB/s**
+    - เมื่อรัน 5 Pods ได้ **68 MB/s** (เฉลี่ยเหลือตัวละ 13 MB/s)
+    - **สรุป:** การเพิ่ม Client ช่วยเพิ่ม Total Throughput ได้จริง แต่ประสิทธิภาพต่อ Client เริ่มตกลง (Diminishing Returns) แสดงว่าเราเริ่มเข้าใกล้ขีดจำกัดของ Broker (เช่น Disk IOPS หรือ Network Bandwidth) ที่ประมาณ 70 MB/s ครับ
+
+## 5. Breaking Point (จุดที่ระบบล่ม)
+
+**Scenario:**
+- **Clients:** 6 Concurrent Pods
+- **Total Records:** 6,000,000 (1M per pod)
+
+**ผลลัพธ์ (Critical Failure):**
+- **Brokers Crashed:** Kafka Brokers ทั้ง 3 ตัว (broker-0, 1, 2) เข้าสู่สถานะ `CrashLoopBackOff`
+- **Error Logs:** Client แจ้งเตือน `Connection disconnected` และ `TimeoutException`
+- **Infrastructure:** Kubernetes Cluster ยังทำงานได้ แต่ Broker รับ Load ไม่ไหวจน Process ตาย
+
+### สรุปขีดจำกัด (Final Conclusion):
+1.  **Safe Limit:** รองรับได้ดีที่ **5 Clients** (Traffic ~70 MB/s)
+2.  **Breaking Limit:** ระบบล่มเมื่อเจอ Load จาก **6 Clients** (Traffic พยายามดันทะลุ 75-80 MB/s)
+3.  **Root Cause:** น่าจะเกิดจาก resource exhaustion (CPU/Memory/Disk IO) บนตัว Broker Pods ทำให้ Process Java ตาย

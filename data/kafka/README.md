@@ -155,6 +155,92 @@ kubectl -n kafka run kafka-consumer -ti --image=quay.io/strimzi/kafka:0.38.0-kaf
 
 ---
 
+## 📊 Performance Testing
+
+- **Stress Test**: Use the `stress-test.sh` script to test the performance of the cluster.
+
+## Min InSync Replicas
+
+ใน Strimzi บน Kubernetes คุณสามารถตั้งค่า `min.insync.replicas` ได้ **2 จุด** ครับ โดย Strimzi จะยึดตามหลักการของ Kafka คือค่าที่ตั้งใน Topic จะทับค่า Default ของ Cluster เสมอ
+
+แนะนำให้ทำที่ **ระดับ Topic (ข้อ 1)** เพื่อความยืดหยุ่นครับ
+
+-----
+
+### 1\. ตั้งค่าราย Topic (Recommended)
+
+วิธีนี้ดีที่สุดเพราะเราสามารถกำหนดความเข้มงวดแยกตามความสำคัญของข้อมูลแต่ละ Topic ได้
+
+ให้แก้ที่ Custom Resource `KafkaTopic` ครับ:
+
+```yaml
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: my-critical-topic
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 3
+  replicas: 3
+  config:
+    # เพิ่มบรรทัดนี้เข้าไป
+    min.insync.replicas: 2 
+    retention.ms: 7200000
+```
+
+**วิธีแก้ผ่าน Command Line:**
+
+```bash
+kubectl edit kafkatopic <ชื่อ-topic> -n <namespace>
+```
+
+แล้วไปเพิ่มในส่วน `spec.config` ตามตัวอย่างข้างบนครับ
+
+-----
+
+### 2\. ตั้งค่า Default ทั้ง Cluster (Global Level)
+
+ถ้าคุณสร้าง Topic ใหม่โดยไม่ระบุ config นี้ มันจะใช้ค่านี้เป็นค่าเริ่มต้น (ถ้าไม่ตั้งเลย Default ของ Kafka คือ 1 ซึ่งไม่ปลอดภัย)
+
+ให้แก้ที่ Custom Resource `Kafka` ครับ:
+
+```yaml
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: my-cluster
+spec:
+  kafka:
+    version: 3.7.0
+    replicas: 3
+    config:
+      # เพิ่มบรรทัดนี้เข้าไปในส่วน config ของ kafka
+      min.insync.replicas: 2
+      default.replication.factor: 3
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+```
+
+**วิธีแก้ผ่าน Command Line:**
+
+```bash
+kubectl edit kafka <ชื่อ-cluster> -n <namespace>
+```
+
+*ข้อควรระวัง: การแก้ที่ `Kafka` CR อาจจะทำให้ Strimzi ทำการ Rolling Update (Restart Broker ทีละตัว) เพื่อ Apply config ใหม่ครับ*
+
+### คำแนะนำเพิ่มเติม
+
+สำหรับ Cluster ที่เป็น Production มาตรฐานที่นิยมใช้กันคือ:
+
+  * **Replicas:** 3
+  * **Min Insync Replicas:** 2
+  * **Acks (ที่ฝั่ง Producer code):** all (หรือ -1)
+
+สูตรนี้จะทำให้ Cluster ของคุณทนทานต่อการที่ Broker ตายได้ 1 ตัว โดยที่ข้อมูลไม่หายและระบบไม่หยุดชะงักครับ
+
 ## ❓ Troubleshooting
 
 Common issues and fixes:

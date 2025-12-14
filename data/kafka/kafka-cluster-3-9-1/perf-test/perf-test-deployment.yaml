@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-perf-test
+  labels:
+    app: kafka-perf-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-perf-test
+  template:
+    metadata:
+      labels:
+        app: kafka-perf-test
+    spec:
+      containers:
+        - name: kafka
+          image: apache/kafka:3.9.0
+          command:
+            - "/bin/bash"
+            - "-c"
+            - "sleep infinity"
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"

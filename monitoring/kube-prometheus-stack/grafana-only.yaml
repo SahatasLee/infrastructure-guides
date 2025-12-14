@@ -1,0 +1,60 @@
+# Values for kube-prometheus-stack (Grafana Only)
+
+# 1. Disable Core Components
+prometheus:
+  enabled: false
+
+alertmanager:
+  enabled: false
+
+prometheusOperator:
+  enabled: false
+
+# 2. Disable Exporters & Collectors
+kubeStateMetrics:
+  enabled: false
+nodeExporter:
+  enabled: false
+kube-state-metrics:
+  enabled: false
+prometheus-node-exporter:
+  enabled: false
+
+# 3. Configure Grafana
+grafana:
+  enabled: true
+
+  # Enable Default Dashboards (Node, K8s, etc.)
+  defaultDashboardsEnabled: true
+
+  # Persistence (PVC)
+  persistence:
+    enabled: true
+    storageClassName: default
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+
+  # Ingress Access
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    # annotations:
+    #   {}
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - grafana.example.com
+    path: /
+
+  # Dashboard Sidecar (Auto-discovery of ConfigMaps)
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+
+  # Example: Add your External Prometheus here
+  additionalDataSources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-operated.monitoring:9090
+      # access: proxy

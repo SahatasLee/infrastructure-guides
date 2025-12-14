@@ -1,0 +1,486 @@
+apiVersion: core.strimzi.io/v1beta2
+kind: StrimziPodSet
+metadata:
+  annotations:
+    strimzi.io/kafka-version: 3.9.1
+    strimzi.io/storage: '{"type":"jbod","volumes":[{"id":0,"type":"persistent-claim","size":"10Gi","class":"vks-storage-policy-latebinding"}]}'
+  creationTimestamp: "2025-12-12T07:11:27Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/instance: kafka-cluster-poc-3-9-1
+    app.kubernetes.io/managed-by: strimzi-cluster-operator
+    app.kubernetes.io/name: kafka
+    app.kubernetes.io/part-of: strimzi-kafka-cluster-poc-3-9-1
+    strimzi.io/cluster: kafka-cluster-poc-3-9-1
+    strimzi.io/component-type: kafka
+    strimzi.io/kind: Kafka
+    strimzi.io/name: kafka-cluster-poc-3-9-1-kafka
+    strimzi.io/pool-name: kafka
+  name: kafka-cluster-poc-3-9-1-kafka
+  namespace: kafka
+  ownerReferences:
+  - apiVersion: kafka.strimzi.io/v1beta2
+    blockOwnerDeletion: false
+    controller: false
+    kind: Kafka
+    name: kafka-cluster-poc-3-9-1
+    uid: c8b8dc16-4fd1-4485-84e1-562bc067b443
+  resourceVersion: "7936338"
+  uid: 23d925d5-53ac-470d-bffb-ba4c4f9cfe6c
+spec:
+  pods:
+  - apiVersion: v1
+    kind: Pod
+    metadata:
+      annotations:
+        strimzi.io/broker-configuration-hash: df3ed8dd
+        strimzi.io/clients-ca-cert-generation: "0"
+        strimzi.io/cluster-ca-cert-generation: "0"
+        strimzi.io/cluster-ca-key-generation: "0"
+        strimzi.io/inter-broker-protocol-version: "3.9"
+        strimzi.io/kafka-version: 3.9.1
+        strimzi.io/log-message-format-version: "3.9"
+        strimzi.io/logging-hash: e893ac9f
+        strimzi.io/revision: "57909920"
+        strimzi.io/server-cert-hash: 086ca0a0161e07b5b71791b21cd2239fba91d6fa
+      labels:
+        app.kubernetes.io/instance: kafka-cluster-poc-3-9-1
+        app.kubernetes.io/managed-by: strimzi-cluster-operator
+        app.kubernetes.io/name: kafka
+        app.kubernetes.io/part-of: strimzi-kafka-cluster-poc-3-9-1
+        statefulset.kubernetes.io/pod-name: kafka-cluster-poc-3-9-1-kafka-0
+        strimzi.io/broker-role: "true"
+        strimzi.io/cluster: kafka-cluster-poc-3-9-1
+        strimzi.io/component-type: kafka
+        strimzi.io/controller: strimzipodset
+        strimzi.io/controller-name: kafka-cluster-poc-3-9-1-kafka
+        strimzi.io/controller-role: "false"
+        strimzi.io/kind: Kafka
+        strimzi.io/name: kafka-cluster-poc-3-9-1-kafka
+        strimzi.io/pod-name: kafka-cluster-poc-3-9-1-kafka-0
+        strimzi.io/pool-name: kafka
+      name: kafka-cluster-poc-3-9-1-kafka-0
+      namespace: kafka
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  strimzi.io/cluster: kafka-cluster-poc-3-9-1
+                  strimzi.io/name: kafka-cluster-poc
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - args:
+        - /opt/kafka/kafka_run.sh
+        env:
+        - name: KAFKA_METRICS_ENABLED
+          value: "true"
+        - name: STRIMZI_KAFKA_GC_LOG_ENABLED
+          value: "false"
+        - name: STRIMZI_DYNAMIC_HEAP_PERCENTAGE
+          value: "50"
+        - name: STRIMZI_DYNAMIC_HEAP_MAX
+          value: "5368709120"
+        - name: TZ
+          value: Asia/Bangkok
+        image: quay.io/strimzi/kafka:0.45.1-kafka-3.9.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /opt/kafka/kafka_liveness.sh
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        name: kafka
+        ports:
+        - containerPort: 8443
+          name: tcp-kafkaagent
+          protocol: TCP
+        - containerPort: 9090
+          name: tcp-ctrlplane
+          protocol: TCP
+        - containerPort: 9091
+          name: tcp-replication
+          protocol: TCP
+        - containerPort: 9092
+          name: tcp-clients
+          protocol: TCP
+        - containerPort: 9094
+          name: tcp-external
+          protocol: TCP
+        - containerPort: 9404
+          name: tcp-prometheus
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /opt/kafka/kafka_readiness.sh
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /var/lib/kafka/data-0
+          name: data-0
+        - mountPath: /tmp
+          name: strimzi-tmp
+        - mountPath: /opt/kafka/cluster-ca-certs
+          name: cluster-ca
+        - mountPath: /opt/kafka/broker-certs
+          name: broker-certs
+        - mountPath: /opt/kafka/client-ca-certs
+          name: client-ca-cert
+        - mountPath: /opt/kafka/custom-config/
+          name: kafka-metrics-and-logging
+        - mountPath: /var/opt/kafka
+          name: ready-files
+      hostname: kafka-cluster-poc-3-9-1-kafka-0
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 0
+      serviceAccountName: kafka-cluster-poc-3-9-1-kafka
+      subdomain: kafka-cluster-poc-3-9-1-kafka-brokers
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data-0
+        persistentVolumeClaim:
+          claimName: data-0-kafka-cluster-poc-3-9-1-kafka-0
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 5Mi
+        name: strimzi-tmp
+      - name: cluster-ca
+        secret:
+          defaultMode: 292
+          secretName: kafka-cluster-poc-3-9-1-cluster-ca-cert
+      - name: broker-certs
+        secret:
+          defaultMode: 292
+          secretName: kafka-cluster-poc-3-9-1-kafka-brokers
+      - name: client-ca-cert
+        secret:
+          defaultMode: 292
+          secretName: kafka-cluster-poc-3-9-1-clients-ca-cert
+      - configMap:
+          name: kafka-cluster-poc-3-9-1-kafka-0
+        name: kafka-metrics-and-logging
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 1Ki
+        name: ready-files
+  - apiVersion: v1
+    kind: Pod
+    metadata:
+      annotations:
+        strimzi.io/broker-configuration-hash: d6959a65
+        strimzi.io/clients-ca-cert-generation: "0"
+        strimzi.io/cluster-ca-cert-generation: "0"
+        strimzi.io/cluster-ca-key-generation: "0"
+        strimzi.io/inter-broker-protocol-version: "3.9"
+        strimzi.io/kafka-version: 3.9.1
+        strimzi.io/log-message-format-version: "3.9"
+        strimzi.io/logging-hash: e893ac9f
+        strimzi.io/revision: 82bafb5a
+        strimzi.io/server-cert-hash: a97aad4c0f24cbd0905f700b8f6e0b468511ad3d
+      labels:
+        app.kubernetes.io/instance: kafka-cluster-poc-3-9-1
+        app.kubernetes.io/managed-by: strimzi-cluster-operator
+        app.kubernetes.io/name: kafka
+        app.kubernetes.io/part-of: strimzi-kafka-cluster-poc-3-9-1
+        statefulset.kubernetes.io/pod-name: kafka-cluster-poc-3-9-1-kafka-1
+        strimzi.io/broker-role: "true"
+        strimzi.io/cluster: kafka-cluster-poc-3-9-1
+        strimzi.io/component-type: kafka
+        strimzi.io/controller: strimzipodset
+        strimzi.io/controller-name: kafka-cluster-poc-3-9-1-kafka
+        strimzi.io/controller-role: "false"
+        strimzi.io/kind: Kafka
+        strimzi.io/name: kafka-cluster-poc-3-9-1-kafka
+        strimzi.io/pod-name: kafka-cluster-poc-3-9-1-kafka-1
+        strimzi.io/pool-name: kafka
+      name: kafka-cluster-poc-3-9-1-kafka-1
+      namespace: kafka
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  strimzi.io/cluster: kafka-cluster-poc-3-9-1
+                  strimzi.io/name: kafka-cluster-poc
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - args:
+        - /opt/kafka/kafka_run.sh
+        env:
+        - name: KAFKA_METRICS_ENABLED
+          value: "true"
+        - name: STRIMZI_KAFKA_GC_LOG_ENABLED
+          value: "false"
+        - name: STRIMZI_DYNAMIC_HEAP_PERCENTAGE
+          value: "50"
+        - name: STRIMZI_DYNAMIC_HEAP_MAX
+          value: "5368709120"
+        - name: TZ
+          value: Asia/Bangkok
+        image: quay.io/strimzi/kafka:0.45.1-kafka-3.9.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /opt/kafka/kafka_liveness.sh
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        name: kafka
+        ports:
+        - containerPort: 8443
+          name: tcp-kafkaagent
+          protocol: TCP
+        - containerPort: 9090
+          name: tcp-ctrlplane
+          protocol: TCP
+        - containerPort: 9091
+          name: tcp-replication
+          protocol: TCP
+        - containerPort: 9092
+          name: tcp-clients
+          protocol: TCP
+        - containerPort: 9094
+          name: tcp-external
+          protocol: TCP
+        - containerPort: 9404
+          name: tcp-prometheus
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /opt/kafka/kafka_readiness.sh
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /var/lib/kafka/data-0
+          name: data-0
+        - mountPath: /tmp
+          name: strimzi-tmp
+        - mountPath: /opt/kafka/cluster-ca-certs
+          name: cluster-ca
+        - mountPath: /opt/kafka/broker-certs
+          name: broker-certs
+        - mountPath: /opt/kafka/client-ca-certs
+          name: client-ca-cert
+        - mountPath: /opt/kafka/custom-config/
+          name: kafka-metrics-and-logging
+        - mountPath: /var/opt/kafka
+          name: ready-files
+      hostname: kafka-cluster-poc-3-9-1-kafka-1
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 0
+      serviceAccountName: kafka-cluster-poc-3-9-1-kafka
+      subdomain: kafka-cluster-poc-3-9-1-kafka-brokers
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data-0
+        persistentVolumeClaim:
+          claimName: data-0-kafka-cluster-poc-3-9-1-kafka-1
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 5Mi
+        name: strimzi-tmp
+      - name: cluster-ca
+        secret:
+          defaultMode: 292
+          secretName: kafka-cluster-poc-3-9-1-cluster-ca-cert
+      - name: broker-certs
+        secret:
+          defaultMode: 292
+          secretName: kafka-cluster-poc-3-9-1-kafka-brokers
+      - name: client-ca-cert
+        secret:
+          defaultMode: 292
+          secretName: kafka-cluster-poc-3-9-1-clients-ca-cert
+      - configMap:
+          name: kafka-cluster-poc-3-9-1-kafka-1
+        name: kafka-metrics-and-logging
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 1Ki
+        name: ready-files
+  - apiVersion: v1
+    kind: Pod
+    metadata:
+      annotations:
+        strimzi.io/broker-configuration-hash: 4ee14dcf
+        strimzi.io/clients-ca-cert-generation: "0"
+        strimzi.io/cluster-ca-cert-generation: "0"
+        strimzi.io/cluster-ca-key-generation: "0"
+        strimzi.io/inter-broker-protocol-version: "3.9"
+        strimzi.io/kafka-version: 3.9.1
+        strimzi.io/log-message-format-version: "3.9"
+        strimzi.io/logging-hash: e893ac9f
+        strimzi.io/revision: 5e88c978
+        strimzi.io/server-cert-hash: d4cdc44ce5f1dc9fa5c66c5baba9dce6352788e4
+      labels:
+        app.kubernetes.io/instance: kafka-cluster-poc-3-9-1
+        app.kubernetes.io/managed-by: strimzi-cluster-operator
+        app.kubernetes.io/name: kafka
+        app.kubernetes.io/part-of: strimzi-kafka-cluster-poc-3-9-1
+        statefulset.kubernetes.io/pod-name: kafka-cluster-poc-3-9-1-kafka-2
+        strimzi.io/broker-role: "true"
+        strimzi.io/cluster: kafka-cluster-poc-3-9-1
+        strimzi.io/component-type: kafka
+        strimzi.io/controller: strimzipodset
+        strimzi.io/controller-name: kafka-cluster-poc-3-9-1-kafka
+        strimzi.io/controller-role: "false"
+        strimzi.io/kind: Kafka
+        strimzi.io/name: kafka-cluster-poc-3-9-1-kafka
+        strimzi.io/pod-name: kafka-cluster-poc-3-9-1-kafka-2
+        strimzi.io/pool-name: kafka
+      name: kafka-cluster-poc-3-9-1-kafka-2
+      namespace: kafka
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  strimzi.io/cluster: kafka-cluster-poc-3-9-1
+                  strimzi.io/name: kafka-cluster-poc
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - args:
+        - /opt/kafka/kafka_run.sh
+        env:
+        - name: KAFKA_METRICS_ENABLED
+          value: "true"
+        - name: STRIMZI_KAFKA_GC_LOG_ENABLED
+          value: "false"
+        - name: STRIMZI_DYNAMIC_HEAP_PERCENTAGE
+          value: "50"
+        - name: STRIMZI_DYNAMIC_HEAP_MAX
+          value: "5368709120"
+        - name: TZ
+          value: Asia/Bangkok
+        image: quay.io/strimzi/kafka:0.45.1-kafka-3.9.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /opt/kafka/kafka_liveness.sh
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        name: kafka
+        ports:
+        - containerPort: 8443
+          name: tcp-kafkaagent
+          protocol: TCP
+        - containerPort: 9090
+          name: tcp-ctrlplane
+          protocol: TCP
+        - containerPort: 9091
+          name: tcp-replication
+          protocol: TCP
+        - containerPort: 9092
+          name: tcp-clients
+          protocol: TCP
+        - containerPort: 9094
+          name: tcp-external
+          protocol: TCP
+        - containerPort: 9404
+          name: tcp-prometheus
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /opt/kafka/kafka_readiness.sh
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /var/lib/kafka/data-0
+          name: data-0
+        - mountPath: /tmp
+          name: strimzi-tmp
+        - mountPath: /opt/kafka/cluster-ca-certs
+          name: cluster-ca
+        - mountPath: /opt/kafka/broker-certs
+          name: broker-certs
+        - mountPath: /opt/kafka/client-ca-certs
+          name: client-ca-cert
+        - mountPath: /opt/kafka/custom-config/
+          name: kafka-metrics-and-logging
+        - mountPath: /var/opt/kafka
+          name: ready-files
+      hostname: kafka-cluster-poc-3-9-1-kafka-2
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 0
+      serviceAccountName: kafka-cluster-poc-3-9-1-kafka
+      subdomain: kafka-cluster-poc-3-9-1-kafka-brokers
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data-0
+        persistentVolumeClaim:
+          claimName: data-0-kafka-cluster-poc-3-9-1-kafka-2
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 5Mi
+        name: strimzi-tmp
+      - name: cluster-ca
+        secret:
+          defaultMode: 292
+          secretName: kafka-cluster-poc-3-9-1-cluster-ca-cert
+      - name: broker-certs
+        secret:
+          defaultMode: 292
+          secretName: kafka-cluster-poc-3-9-1-kafka-brokers
+      - name: client-ca-cert
+        secret:
+          defaultMode: 292
+          secretName: kafka-cluster-poc-3-9-1-clients-ca-cert
+      - configMap:
+          name: kafka-cluster-poc-3-9-1-kafka-2
+        name: kafka-metrics-and-logging
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 1Ki
+        name: ready-files
+  selector:
+    matchLabels:
+      strimzi.io/cluster: kafka-cluster-poc-3-9-1
+      strimzi.io/kind: Kafka
+      strimzi.io/name: kafka-cluster-poc-3-9-1-kafka
+      strimzi.io/pool-name: kafka
+status:
+  currentPods: 3
+  observedGeneration: 1
+  pods: 3
+  readyPods: 0

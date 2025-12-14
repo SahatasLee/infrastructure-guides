@@ -114,10 +114,6 @@ Test the read performance. Ensure the topic has data first (run the producer tes
 
 > **Important**: The `admin` user ACL restricts access to group `test-group`. Ensure you use this group ID.
 
-  --group test-group \
-  --print-metrics
-```
-
 ## 4. Stress Testing (Finding Limits)
 
 To find the breaking point of the cluster, you successfully identified the baseline. Now push it further:
