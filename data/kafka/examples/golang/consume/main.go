@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -65,8 +66,25 @@ func main() {
 		log.Fatalf("Error creating consumer group client: %v", err)
 	}
 
+	// Worker Configuration
+	numWorkers := 1
+	if workersEnv := os.Getenv("KAFKA_WORKERS"); workersEnv != "" {
+		if n, err := strconv.Atoi(workersEnv); err == nil && n > 0 {
+			numWorkers = n
+		}
+	}
+
 	ctx, cancel := context.WithCancel(context.Background())
-	client := &Consumer{}
+	client := &Consumer{
+		ready: make(chan bool),
+		jobs:  make(chan Job, numWorkers*10), // Buffer jobs
+	}
+
+	// Start Workers
+	log.Printf("Starting %d workers...", numWorkers)
+	for w := 1; w <= numWorkers; w++ {
+		go worker(w, client.jobs)
+	}
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
@@ -104,6 +122,12 @@ func main() {
 // Consumer represents a Sarama consumer group consumer
 type Consumer struct {
 	ready chan bool
+	jobs  chan Job
+}
+
+type Job struct {
+	Session sarama.ConsumerGroupSession
+	Message *sarama.ConsumerMessage
 }
 
 // Setup is run at the beginning of a new session, before ConsumeClaim
@@ -121,10 +145,20 @@ func (consumer *Consumer) Cleanup(sarama.ConsumerGroupSession) error {
 // ConsumeClaim must start a consumer loop of ConsumerGroupClaim's Messages().
 func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 	for message := range claim.Messages() {
-		log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
-		session.MarkMessage(message, "")
+		consumer.jobs <- Job{Session: session, Message: message}
 	}
 	return nil
+}
+
+func worker(id int, jobs <-chan Job) {
+	for job := range jobs {
+		// Simulate processing time
+		log.Printf("[Worker %d] Processing: value = %s, partition = %d, offset = %d",
+			id, string(job.Message.Value), job.Message.Partition, job.Message.Offset)
+
+		// Mark message as processed
+		job.Session.MarkMessage(job.Message, "")
+	}
 }
 
 // XDGSCRAMClient implements the sarama.SCRAMClient interface
