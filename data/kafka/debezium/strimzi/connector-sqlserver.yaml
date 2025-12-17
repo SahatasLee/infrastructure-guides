@@ -1,0 +1,19 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: sqlserver-connector
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: my-connect-cluster
+spec:
+  class: io.debezium.connector.sqlserver.SqlServerConnector
+  tasksMax: 1
+  config:
+    database.hostname: sqlserver-service
+    database.port: "1433"
+    database.user: sa
+    database.password: "Password!"
+    database.names: testDB
+    topic.prefix: server1
+    table.include.list: dbo.customers
+    database.encrypt: "false" # For testing primarily

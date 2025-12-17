@@ -80,28 +80,16 @@ spec:
 
 ใช้ Custom Resource `KafkaConnector` แทนการยิง API เอง:
 
-**connector.yaml:**
-```yaml
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaConnector
-metadata:
-  name: inventory-connector
-  namespace: kafka
-  labels:
-    strimzi.io/cluster: my-connect-cluster
-spec:
-  class: io.debezium.connector.postgresql.PostgresConnector
-  tasksMax: 1
-  config:
-    database.hostname: postgres-service
-    database.port: 5432
-    database.user: postgres
-    database.password: postgres
-    database.dbname: postgres
-    topic.prefix: dbserver1
-    table.include.list: public.customers
-    plugin.name: pgoutput
-```
+### PostgreSQL
+รายละเอียดใน `connector.yaml`
+
+### MySQL
+ดูตัวอย่างใน `connector-mysql.yaml`
+
+### SQL Server
+ดูตัวอย่างใน `connector-sqlserver.yaml`
+
+**สำคัญ:** อย่าลืมเปลี่ยนค่า connection config (hostname, user, password) ให้ตรงกับ Database ของคุณ
 
 ---
 
