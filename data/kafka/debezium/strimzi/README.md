@@ -99,6 +99,120 @@ spec:
 # Check Kafka Connect Status
 kubectl get kafkaconnect -n kafka
 
-# Check Connector Status
-kubectl get kafkaconnector -n kafka
+
+---
+
+## 🧠 Deep Dive: How it works
+
+ส่วนนี้จะอธิบายการทำงานของ Connector และความหมายของ Config ต่างๆ โดยละเอียด
+
+### 1. The Configuration Explained
+
+มาดูไส้ในของ `connector-psql.yaml` (หรือไฟล์อื่นๆ) กันครับ:
+
+```yaml
+spec:
+  class: io.debezium.connector.postgresql.PostgresConnector 
+  tasksMax: 1
+  config:
+    database.hostname: postgres-service  # IP หรือ Service Name ของ Database
+    database.port: 5432
+    database.user: postgres
+    database.password: postgres
+    database.dbname: postgres
+    
+    # 🎯 Topic Prefix: สำคัญมาก! ใช้เป็น prefix ของ Topic ที่จะถูกสร้าง
+    topic.prefix: dbserver1
+    
+    # 📋 Table Whitelist: ระบุเฉพาะ Table ที่ต้องการ (Format: schema.table)
+    table.include.list: public.customers
+    
+    # 🧩 Plugin Name: สำหรับ Postgres ต้องใช้ pgoutput (Built-in decoding logic)
+    plugin.name: pgoutput
 ```
+
+### 2. How Topics are Created (สำคัญ!)
+
+Debezium จะ **สร้าง Kafka Topic ให้โดยอัตโนมัติ** สำหรับทุกๆ Table ที่เราไปดักจับ โดยใช้ Naming Convention ดังนี้:
+
+> **Format:** `<topic.prefix>.<schema>.<table_name>`
+
+**ตัวอย่าง:**
+- `topic.prefix` = **dbserver1**
+- schema = **public**
+- table = **customers**
+
+👉 Kafka Topic ที่เกิดขึ้นคือ: `dbserver1.public.customers`
+
+### 3. Message Structure (Value)
+
+เมื่อข้อมูลใน Database เปลี่ยนแปลง (Insert/Update/Delete) Debezium จะ Produce message ไปลง Topic
+ข้อมูล (Value) จะเป็น JSON ที่มีโครงสร้างมาตรฐานดังนี้:
+
+```json
+{
+  "schema": { ... }, 
+  "payload": {
+    "before": {           // ข้อมูล "ก่อน" การเปลี่ยนแปลง (จะเป็น null ถ้าเป็น INSERT)
+      "id": 101,
+      "email": "old@example.com"
+    },
+    "after": {            // ข้อมูล "หลัง" การเปลี่ยนแปลง (จะเป็น null ถ้าเป็น DELETE)
+      "id": 101,
+        "email": "new@example.com"
+    },
+    "source": { ... },    // 
+    "op": "u",            // Operation type: c=create, u=update, d=delete, r=read (snapshot)
+    "ts_ms": 1638345678   // timestamp
+  }
+}
+```
+
+### 4. สรุป Flow การทำงาน
+
+1. **Connector Start:** Debezium เชื่อมต่อไปยัง Database
+2. **Snapshot (Optional):** ถ้าเป็นครั้งแรก มันจะ Select ข้อมูลทั้งหมดมาแปลงเป็น Event (op=`r`)
+3. **Stream:** หลังจากนั้นจะ Monitor Transaction Log (WAL)
+4. **Produce:** เมื่อเจอ change -> สร้าง JSON -> ยิงลง Topic `prefix.schema.table`
+
+### 5. FAQ: สามารถสร้าง Topic เองได้ไหม? (Custom Topics)
+
+**ทำได้ครับ!** และ **แนะนำให้ทำ** สำหรับ Production ด้วย
+
+#### Scenario A: อยากกำหนด Config ของ Topic (Partitions, Retention)
+Debezium จะสร้าง Topic ให้ Auto ก็จริง แต่มักจะเป็น Default Config (1 partition) ซึ่งอาจไม่พอ
+**วิธีทำ:** สร้าง `KafkaTopic` CR รอไว้ก่อนเลย **โดยตั้งชื่อให้ตรงกับที่ Debezium จะใช้** (`prefix.schema.table`)
+
+```yaml
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: dbserver1.public.customers  # <-- ชื่อต้องเป๊ะ!
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 3          # กำหนด Partition เองได้
+  replicas: 3
+  config:
+    retention.ms: 604800000  # 7 Days
+    cleanup.policy: compact  # แนะนำสำหรับ CDC!
+```
+
+#### Scenario B: อยากเปลี่ยนชื่อ Topic ไปเลย (ไม่เอา prefix.schema.table)
+ถ้าอยากให้ Topic ชื่อ `crm.users` แทนที่จะเป็น `dbserver1.public.customers`
+**วิธีทำ:** ใช้ **SMT (Single Message Transform)** ชื่อ `ByLogicalTableRouter`
+
+เพิ่ม Config นี้ลงใน `KafkaConnector`:
+
+```yaml
+config:
+  # ... config เดิม ...
+  
+  # เปลี่ยนชื่อ Topic
+  transforms: RerouteTopic
+  transforms.RerouteTopic.type: io.debezium.transforms.ByLogicalTableRouter
+  transforms.RerouteTopic.topic.regex: dbserver1.public.(.*)
+  transforms.RerouteTopic.topic.replacement: crm.$1
+```
+
+แบบนี้ Topic ที่ออกมาจะเป็น `crm.customers` แทน
