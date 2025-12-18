@@ -174,6 +174,7 @@ Debezium จะ **สร้าง Kafka Topic ให้โดยอัตโน�
 2. **Snapshot (Optional):** ถ้าเป็นครั้งแรก มันจะ Select ข้อมูลทั้งหมดมาแปลงเป็น Event (op=`r`)
 3. **Stream:** หลังจากนั้นจะ Monitor Transaction Log (WAL)
 4. **Produce:** เมื่อเจอ change -> สร้าง JSON -> ยิงลง Topic `prefix.schema.table`
+5. **Consume:** ใช้ Kafka Consumer ดึงข้อมูลมาใช้
 
 ### 5. FAQ: สามารถสร้าง Topic เองได้ไหม? (Custom Topics)
 
@@ -216,3 +217,36 @@ config:
 ```
 
 แบบนี้ Topic ที่ออกมาจะเป็น `crm.customers` แทน
+  
+---
+
+### 6. FAQ: ใช้กับ CloudNativePG (CNPG) ได้ไหม?
+
+**ได้ครับ!** และเป็นท่าที่นิยมมากใน Kubernetes
+
+สิ่งที่ต้องทำเพิ่มในฝั่ง **CNPG Cluster YAML**:
+
+1. **เปิด WAL Level**: ต้องแก้ `postgresql.conf` ผ่าน `spec.postgresql`
+2. **Connection**: ให้ชี้ไปที่ Service RW (`-rw`)
+
+**ตัวอย่าง CNPG Cluster:**
+```yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: my-pg-cluster
+spec:
+  # ... options ...
+  postgresql:
+    parameters:
+      wal_level: logical  # 👈 ต้องมีบรรทัดนี้!
+      max_replication_slots: "10" 
+```
+
+**ตัวอย่าง Debezium Config:**
+```yaml
+config:
+  database.hostname: my-pg-cluster-rw # 👈 ใช้ Service RW
+  database.port: 5432
+  database.user: streaming_replica    # หรือ user ที่มีสิทธิ์ replication
+  # ...
