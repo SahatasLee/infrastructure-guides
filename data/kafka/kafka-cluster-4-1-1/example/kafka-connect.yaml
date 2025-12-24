@@ -1,0 +1,130 @@
+# Basic configuration (required)
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaConnect # (1)
+metadata:
+  name: my-connect-cluster
+  annotations:
+    strimzi.io/use-connector-resources: "true" # (2)
+# Deployment specifications
+spec:
+  # Replicas (required)
+  replicas: 3 # (3)
+  # Bootstrap servers (required)
+  bootstrapServers: my-cluster-kafka-bootstrap:9092 # (4)
+  # Connect cluster group ID (required in v1 CRD API)
+  groupId: my-connect-cluster # (5)
+  # Connect cluster storage topics (required in v1 CRD API)
+  configStorageTopic: my-connect-cluster-configs # (6)
+  offsetStorageTopic: my-connect-cluster-offsets # (7)
+  statusStorageTopic: my-connect-cluster-status # (8)
+  # Kafka Connect configuration (recommended)
+  config: # (9)
+    key.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    key.converter.schemas.enable: true
+    value.converter.schemas.enable: true
+    config.storage.replication.factor: 3
+    offset.storage.replication.factor: 3
+    status.storage.replication.factor: 3
+  # Resources requests and limits (recommended)
+  resources: # (10)
+    requests:
+      cpu: "1"
+      memory: 2Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+  # Authentication (optional)
+  authentication: # (11)
+    type: tls
+    certificateAndKey:
+      certificate: source.crt
+      key: source.key
+      secretName: my-user-source
+  # TLS configuration (optional)
+  tls: # (12)
+    trustedCertificates:
+      - secretName: my-cluster-cluster-cert
+        pattern: "*.crt"
+      - secretName: my-cluster-cluster-cert
+        pattern: "*.crt"
+  # Build configuration (optional)
+  build: # (13)
+    output: # (14)
+      type: docker
+      image: my-registry.io/my-org/my-connect-cluster:latest
+      pushSecret: my-registry-credentials
+    plugins: # (15)
+      - name: connector-1
+        artifacts:
+          - type: tgz
+            url: <url_to_download_connector_1_artifact>
+            sha512sum: <SHA-512_checksum_of_connector_1_artifact>
+      - name: connector-2
+        artifacts:
+          - type: jar
+            url: <url_to_download_connector_2_artifact>
+            sha512sum: <SHA-512_checksum_of_connector_2_artifact>
+  # Logging configuration (optional)
+  logging: # (16)
+    type: inline
+    loggers:
+      # Kafka 4.0+ uses Log4j2
+      rootLogger.level: INFO
+  # Readiness probe (optional)
+  readinessProbe: # (17)
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+  # Liveness probe (optional)
+  livenessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+  # Metrics configuration (optional)
+  metricsConfig: # (18)
+    type: jmxPrometheusExporter
+    valueFrom:
+      configMapKeyRef:
+        name: my-config-map
+        key: my-key
+  # JVM options (optional)
+  jvmOptions: # (19)
+    "-Xmx": "1g"
+    "-Xms": "1g"
+  # Custom image (optional)
+  image: my-org/my-image:latest # (20)
+  # Rack awareness (optional)
+  rack:
+    topologyKey: topology.kubernetes.io/zone # (21)
+  # Pod and container template (optional)
+  template: # (22)
+    pod:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: application
+                    operator: In
+                    values:
+                      - postgresql
+                      - mongodb
+              topologyKey: "kubernetes.io/hostname"
+    connectContainer: # (23)
+      env:
+        - name: OTEL_SERVICE_NAME
+          value: my-otel-service
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://otlp-host:4317"
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-creds
+              key: awsAccessKey
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws-creds
+              key: awsSecretAccessKey
+  # Tracing configuration (optional)
+  tracing:
+    type: opentelemetry # (24)

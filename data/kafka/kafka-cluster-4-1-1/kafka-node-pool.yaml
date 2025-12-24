@@ -3,7 +3,7 @@ kind: KafkaNodePool
 metadata:
   name: controller
   labels:
-    strimzi.io/cluster: kafka-cluster-kraft
+    strimzi.io/cluster: kafka-cluster-kraft-poc-4-1-1
 spec:
   replicas: 3
   roles:
@@ -24,13 +24,25 @@ spec:
     limits:
       cpu: "2"
       memory: 4Gi
+  template:
+    pod:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    strimzi.io/cluster: kafka-cluster-kraft-poc-4-1-1
+                    strimzi.io/name: kafka-cluster-kraft-poc-4-1-1
+                topologyKey: kubernetes.io/hostname
+              weight: 100
 ---
 apiVersion: kafka.strimzi.io/v1
 kind: KafkaNodePool
 metadata:
   name: broker
   labels:
-    strimzi.io/cluster: kafka-cluster-kraft
+    strimzi.io/cluster: kafka-cluster-kraft-poc-4-1-1
 spec:
   replicas: 3
   roles:
@@ -59,7 +71,7 @@ spec:
             - podAffinityTerm:
                 labelSelector:
                   matchLabels:
-                    strimzi.io/cluster: kafka-cluster-kraft
-                    strimzi.io/name: kafka-cluster-poc
+                    strimzi.io/cluster: kafka-cluster-kraft-poc-4-1-1
+                    strimzi.io/name: kafka-cluster-kraft-poc-4-1-1
                 topologyKey: kubernetes.io/hostname
               weight: 100

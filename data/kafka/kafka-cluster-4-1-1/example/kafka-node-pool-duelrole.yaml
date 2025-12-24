@@ -1,0 +1,31 @@
+# Basic configuration (required)
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaNodePool
+metadata:
+  name: kraft-dual-role # (1)
+  labels:
+    strimzi.io/cluster: my-cluster # (2)
+# Node pool specifications
+spec:
+  # Replicas (required)
+  replicas: 3 # (3)
+  # Roles (required)
+  roles: # (4)
+    - controller
+    - broker
+  # Storage configuration (required)
+  storage: # (5)
+    type: jbod
+    volumes:
+      - id: 0
+        type: persistent-claim
+        size: 100Gi
+        deleteClaim: false
+  # Resources requests and limits (recommended)
+  resources: # (6)
+    requests:
+      memory: 64Gi
+      cpu: "8"
+    limits:
+      memory: 64Gi
+      cpu: "12"

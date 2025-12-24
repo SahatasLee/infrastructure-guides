@@ -9,19 +9,18 @@
 ### Brokers
 - **Replicas:** 3
 - **Resources:**
-    - **CPU:** 1 (Request) / 4 (Limit)
-    - **Memory:** 2Gi (Request) / 8Gi (Limit)
-    - **JVM Heap:** 1GB (`-Xms: 1g`, `-Xmx: 1g`)
+    - **CPU:** 1 (Request) / 2 (Limit)
+    - **Memory:** 1Gi (Request) / 4Gi (Limit)
 - **Storage:** 10Gi Persistent Volume (JBOD) per broker.
 - **Storage Class:** `vks-storage-policy-latebinding`
 
-### Zookeeper
+### Controller
 - **Replicas:** 3
 - **Resources:**
     - **CPU:** 1 (Request) / 2 (Limit)
-    - **Memory:** 2Gi (Request) / 8Gi (Limit)
-    - **JVM Heap:** 1GB (`-Xms: 1g`, `-Xmx: 1g`)
-- **Storage:** 10Gi Persistent Volume per node.
+    - **Memory:** 1Gi (Request) / 4Gi (Limit)
+- **Storage:** 10Gi Persistent Volume (JBOD) per broker.
+- **Storage Class:** `vks-storage-policy-latebinding`
 
 ---
 

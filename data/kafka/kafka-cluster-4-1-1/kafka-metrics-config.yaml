@@ -5,9 +5,11 @@ metadata:
   labels:
     app: strimzi
 data:
-  kafka-metrics-config.yaml: |
+  kafka-metrics-config.yml: |
+    # See https://github.com/prometheus/jmx_exporter for more info about JMX Prometheus Exporter metrics
     lowercaseOutputName: true
     rules:
+    # Special cases and very specific rules
     - pattern: kafka.server<type=(.+), name=(.+), clientId=(.+), topic=(.+), partition=(.*)><>Value
       name: kafka_server_$1_$2
       type: GAUGE
