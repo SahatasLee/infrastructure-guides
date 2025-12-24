@@ -32,20 +32,32 @@
 
 ### Steps
 
+### Strimzi Operator Installation
+
+```bash
+# 1. Add Helm Repo
+helm repo add strimzi https://strimzi.io/charts/
+helm repo update
+
+# 2. Create Namespace
+kubectl create ns kafka
+
+# 3. Install Operator
+helm upgrade --install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
+  --version 0.49.1 \
+  -n kafka \
+  --set watchAnyNamespace=true
+```
+
 ### KRaft Mode (No Zookeeper)
 
-1. **Create Namespace** (Optional)
-   ```bash
-   kubectl create ns kafka
-   ```
-
-2. **Apply Configuration**
+1. **Apply Configuration**
    ```bash
    kubectl apply -f kafka-node-pool.yaml -n kafka
    kubectl apply -f kafka-cluster.yaml -n kafka
    ```
 
-3. **Verify Deployment**
+2. **Verify Deployment**
    ```bash
    kubectl get pods -n kafka -w
    ```

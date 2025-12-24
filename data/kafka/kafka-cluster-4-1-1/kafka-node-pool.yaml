@@ -13,9 +13,9 @@ spec:
     volumes:
       - id: 0
         type: persistent-claim
-        size: 20Gi
+        size: 10Gi
         kraftMetadata: shared
-        class: vks-storage-policy-latebinding
+        class: openebs-zfspv
         deleteClaim: false
   resources:
     requests:
@@ -52,9 +52,9 @@ spec:
     volumes:
       - id: 0
         type: persistent-claim
-        size: 20Gi
+        size: 10Gi
         kraftMetadata: shared
-        class: vks-storage-policy-latebinding
+        class: openebs-zfspv
         deleteClaim: false
   resources:
     requests:

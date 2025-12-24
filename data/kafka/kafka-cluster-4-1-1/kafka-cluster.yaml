@@ -27,14 +27,14 @@ spec:
           type: scram-sha-512
         configuration:
           bootstrap:
-            loadBalancerIP: 10.10.1.6
+            loadBalancerIP: 10.4.108.167
           brokers:
             - broker: 0
-              loadBalancerIP: 10.10.1.7
+              loadBalancerIP: 10.4.108.164
             - broker: 1
-              loadBalancerIP: 10.10.1.8
+              loadBalancerIP: 10.4.108.165
             - broker: 2
-              loadBalancerIP: 10.10.1.9
+              loadBalancerIP: 10.4.108.166
     # Kafka configuration (recommended)
     config:
       auto.create.topics.enable: "false"
@@ -102,9 +102,9 @@ spec:
       # reconciliationIntervalMs: 60000
       # Resources requests and limits (recommended)
       resources:
-        requests:
-          memory: 512Mi
-          cpu: "1"
+        # requests:
+        #   memory: 512Mi
+        #   cpu: "1"
         limits:
           memory: 512Mi
           cpu: "1"
@@ -117,9 +117,9 @@ spec:
       # reconciliationIntervalMs: 60000
       # Resources requests and limits (recommended)
       resources:
-        requests:
-          memory: 512Mi
-          cpu: "1"
+        # requests:
+        #   memory: 512Mi
+        #   cpu: "1"
         limits:
           memory: 512Mi
           cpu: "1"
@@ -151,10 +151,7 @@ spec:
       limits:
         cpu: 500m
         memory: 512Mi
-    logging:
-      type: inline
-      loggers:
-        rootLogger.level: "INFO, DEBUG, ERROR"
+    logging: debug
   cruiseControl:
     metricsConfig:
       type: jmxPrometheusExporter
