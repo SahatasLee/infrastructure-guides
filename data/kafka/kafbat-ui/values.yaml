@@ -4,8 +4,8 @@
 yamlApplicationConfig:
   kafka:
     clusters:
-      - name: kafka-cluster-poc
-        bootstrapServers: kafka-cluster-poc-3-9-1-kafka-bootstrap:9092
+      - name: kafka-cluster-kraft-poc-4-1-1
+        bootstrapServers: kafka-cluster-kraft-poc-4-1-1-kafka-bootstrap:9092
         properties:
           security.protocol: SASL_PLAINTEXT
           sasl.mechanism: SCRAM-SHA-512
@@ -20,8 +20,8 @@ yamlApplicationConfig:
 
 resources:
   limits:
-    cpu: 200m
-    memory: 512Mi
+    cpu: 1
+    memory: 1024Mi
   requests:
     cpu: 200m
     memory: 256Mi

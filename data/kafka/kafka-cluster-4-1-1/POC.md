@@ -6,23 +6,23 @@
 - [X] **Storage**: vks-storage-policy-latebinding
 
 ## 1. 🏗️ Infrastructure Deployment
-- [X] **Strimzi Operator**: Ensure v0.49.1+ is running.
+- [X] **Strimzi Operator**: Ensure v0.49.1 is running.
 - [X] **KRaft Cluster**:
     - [X] `Kafka` resource applied.
     - [X] `KafkaNodePool` (controller) applied & ready (3/3).
     - [X] `KafkaNodePool` (broker) applied & ready (3/3).
-    - [] Check logs for "Transitioning to active" (Controller).
+    - [ ] Check logs for "Transitioning to active" (Controller).
 - [X] **Storage**: Verify PVCs are bound for all brokers and controllers.
 
 ## 2. 🔌 Connectivity & Security
-- [ ] **Internal Access** (port 9092):
-    - [ ] Test connection from a pod in the same namespace.
-- [ ] **External Access** (port 9094):
-    - [ ] Verify LoadBalancer IP assignment.
-    - [ ] Test `openssl s_client -connect <LB-IP>:9094`.
-- [ ] **Authentication**:
+- [X] **Internal Access** (port 9092):
+    - [X] Test connection from a pod in the same namespace. `kubectl -n <namespace> run netcat-test --image=busybox --restart=Never --rm -it -- nc -v -z <bootstrap-service-name> 9092`
+- [X] **External Access** (port 9094):
+    - [X] Verify LoadBalancer IP assignment.
+    - [X] Test `nc -v <LB-IP> 9094`.
+- [X] **Authentication**:
     - [X] Create `KafkaUser` (SCRAM-SHA-512).
-    - [ ] Authenticate successfully with client.
+    - [X] Authenticate successfully with client. `kubectl -n kafka run kafka-auth-test --image=quay.io/strimzi/kafka:0.49.1-kafka-4.1.1 --restart=Never -- sleep 3600`
 
 ## 3. ✅ Functional Testing
 - [ ] **Topic Management**:

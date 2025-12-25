@@ -33,7 +33,7 @@ helm repo update
 helm upgrade --install kafbat-ui kafbat/kafka-ui \
   --namespace kafka \
   --values values.yaml \
-  --version 0.7.6
+  --version 1.5.3
 ```
 
 ---
