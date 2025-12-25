@@ -6,56 +6,84 @@
 - [X] **Storage**: vks-storage-policy-latebinding
 
 ## 1. 🏗️ Infrastructure Deployment
-- [X] **Strimzi Operator**: Ensure v0.49.1 is running.
-- [X] **KRaft Cluster**:
-    - [X] `Kafka` resource applied.
-    - [X] `KafkaNodePool` (controller) applied & ready (3/3).
-    - [X] `KafkaNodePool` (broker) applied & ready (3/3).
-    - [ ] Check logs for "Transitioning to active" (Controller).
-- [X] **Storage**: Verify PVCs are bound for all brokers and controllers.
+- [X] 1.1 **Strimzi Operator**: Ensure v0.49.1 is running.
+- [X] 1.2 **KRaft Cluster**:
+    - [X] 1.2.1 `Kafka` resource applied.
+    - [X] 1.2.2 `KafkaNodePool` (controller) applied & ready (3/3).
+    - [X] 1.2.3 `KafkaNodePool` (broker) applied & ready (3/3).
+    - [ ] 1.2.4 Check logs for "Transitioning to active" (Controller).
+- [X] 1.3 **Storage**: Verify PVCs are bound for all brokers and controllers.
 
 ## 2. 🔌 Connectivity & Security
-- [X] **Internal Access** (port 9092):
-    - [X] Test connection from a pod in the same namespace. `kubectl -n <namespace> run netcat-test --image=busybox --restart=Never --rm -it -- nc -v -z <bootstrap-service-name> 9092`
-- [X] **External Access** (port 9094):
-    - [X] Verify LoadBalancer IP assignment.
-    - [X] Test `nc -v <LB-IP> 9094`.
-- [X] **Authentication**:
-    - [X] Create `KafkaUser` (SCRAM-SHA-512).
-    - [X] Authenticate successfully with client. `kubectl -n kafka run kafka-auth-test --image=quay.io/strimzi/kafka:0.49.1-kafka-4.1.1 --restart=Never -- sleep 3600`
+- [X] 2.1 **Internal Access** (port 9092):
+    - [X] 2.1.1 Test connection from a pod in the same namespace. `kubectl -n <namespace> run netcat-test --image=busybox --restart=Never --rm -it -- nc -v -z <bootstrap-service-name> 9092`
+- [X] 2.2 **External Access** (port 9094):
+    - [X] 2.2.1 Verify LoadBalancer IP assignment.
+    - [X] 2.2.2 Test `nc -v <LB-IP> 9094`.
+- [X] 2.3 **Authentication**:
+    - [X] 2.3.1 Create `KafkaUser` (SCRAM-SHA-512).
+    - [X] 2.3.2 Authenticate successfully with client. `kubectl -n kafka run kafka-auth-test --image=quay.io/strimzi/kafka:0.49.1-kafka-4.1.1 --restart=Never -- sleep 3600`
 
 ## 3. ✅ Functional Testing
-- [ ] **Topic Management**:
-    - [X] Create `my-topic` (3 partitions, 3 replicas).
-    - [ ] Verify `min.insync.replicas` enforcement.
-- [ ] **Produce/Consume**:
-    - [ ] Produce 10,000 messages.
-    - [ ] Consume all messages (lag should be 0).
-- [ ] **Performance Baseline**:
-    - [ ] Run `kafka-producer-perf-test` (Target: >10MB/s per broker).
+- [X] 3.1 **Topic Management**:
+    - [X] 3.1.1 Create `my-topic` (3 partitions, 3 replicas).
+    - [X] 3.1.2 Verify `min.insync.replicas` enforcement.
+- [X] 3.2 **Produce/Consume**:
+    - [X] 3.2.1 Produce 10,000 messages.
+    - [X] 3.2.2 Consume all messages (lag should be 0).
+- [ ] 3.3 **Performance Baseline**:
+    - [X] 3.3.1 Run `kafka-producer-perf-test` (Target: >10MB/s per broker). -> Result: 34.71 MB/s
 
 ## 4. 🛡️ Resilience (Day 2 Operations)
-- [ ] **Broker Failure**:
-    - [ ] Delete a **Broker** pod (`kubectl delete pod ...`).
-    - [ ] Verify Producer doesn't stop (acks=all).
-    - [ ] Verify Pod restarts and rejoins ISR.
-- [ ] **Controller Failure**:
-    - [ ] Delete active **Controller** pod.
-    - [ ] Verify new leader election (check logs/metrics).
-- [ ] **Rolling Updates**:
-    - [ ] Change a config (e.g., `log.retention.bytes`) in `Kafka`.
-    - [ ] Verify rolling restart occurs without downtime.
+- [ ] 4.1 **Broker Failure**:
+    - [ ] 4.1.1 Delete a **Broker** pod (`kubectl delete pod ...`).
+    - [ ] 4.1.2 Verify Producer doesn't stop (acks=all).
+    - [ ] 4.1.3 Verify Pod restarts and rejoins ISR.
+- [ ] 4.2 **Controller Failure**:
+    - [ ] 4.2.1 Delete active **Controller** pod.
+    - [ ] 4.2.2 Verify new leader election (check logs/metrics).
+- [ ] 4.3 **Rolling Updates**:
+    - [ ] 4.3.1 Change a config (e.g., `log.retention.bytes`) in `Kafka`.
+    - [ ] 4.3.2 Verify rolling restart occurs without downtime.
 
 ## 5. 🧩 Integrations
-- [ ] **Kafka Connect**:
-    - [ ] Deploy Connect cluster.
-    - [ ] Deploy a dummy Sink Connector (FileSink).
-- [ ] **Cruise Control**:
-    - [ ] Verify Cruise Control pod is running.
-    - [ ] (Optional) Trigger a rebalance proposal.
+- [ ] 5.1 **Kafka Connect**:
+    - [ ] 5.1.1 Deploy Connect cluster.
+    - [ ] 5.1.2 Deploy a dummy Sink Connector (FileSink).
+- [X] 5.2 **Cruise Control**:
+    - [X] 5.2.1 Verify Cruise Control pod is running.
+    - [ ] 5.2.2 (Optional) Trigger a rebalance proposal.
 
 ## 6. 📊 Observability
-- [ ] **Prometheus**: Targets are UP.
-- [ ] **Grafana**:
-    - [ ] Kafka Overview Dashboard works.
-    - [ ] Controller/KRaft specific metrics visible.
+- [X] 6.1 **Prometheus**: Targets are UP.
+- [X] 6.2 **Grafana**:
+    - [X] 6.2.1 Kafka Overview Dashboard works.
+    - [X] 6.2.2 Controller/KRaft specific metrics visible.
+
+## 📝 Documentation
+
+### 1. 🏗️ Infrastructure Deployment
+
+- 1.1 **Strimzi Operator**: Ensure v0.49.1 is running.
+
+```sh
+# Check pod status
+kubectl -n kafka get po
+```
+
+- 1.2 **KRaft Cluster**:
+    - 1.2.1 `Kafka` resource applied.
+    - 1.2.2 `KafkaNodePool` (controller) applied & ready (3/3).
+    - 1.2.3 `KafkaNodePool` (broker) applied & ready (3/3).
+    - 1.2.4 Check logs for "Transitioning to active" (Controller).
+- 1.3 **Storage**: Verify PVCs are bound for all brokers and controllers.
+
+### 2. 🔌 Connectivity & Security
+
+### 3. ✅ Functional Testing
+
+### 4. 🛡️ Resilience (Day 2 Operations)
+
+### 5. 🧩 Integrations
+
+### 6. 📊 Observability
