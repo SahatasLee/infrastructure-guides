@@ -74,6 +74,14 @@ func main() {
 		}
 	}
 
+	enableCommit := true
+	if commitEnv := os.Getenv("KAFKA_ENABLE_COMMIT"); commitEnv != "" {
+		if val, err := strconv.ParseBool(commitEnv); err == nil {
+			enableCommit = val
+		}
+	}
+	log.Printf("Commit messages enabled: %v", enableCommit)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	client := &Consumer{
 		ready: make(chan bool),
@@ -83,7 +91,7 @@ func main() {
 	// Start Workers
 	log.Printf("Starting %d workers...", numWorkers)
 	for w := 1; w <= numWorkers; w++ {
-		go worker(w, client.jobs)
+		go worker(w, client.jobs, enableCommit)
 	}
 
 	wg := &sync.WaitGroup{}
@@ -150,14 +158,16 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 	return nil
 }
 
-func worker(id int, jobs <-chan Job) {
+func worker(id int, jobs <-chan Job, enableCommit bool) {
 	for job := range jobs {
 		// Simulate processing time
 		log.Printf("[Worker %d] Processing: value = %s, partition = %d, offset = %d",
 			id, string(job.Message.Value), job.Message.Partition, job.Message.Offset)
 
 		// Mark message as processed
-		job.Session.MarkMessage(job.Message, "")
+		if enableCommit {
+			job.Session.MarkMessage(job.Message, "")
+		}
 	}
 }
 
