@@ -103,6 +103,7 @@ func main() {
 			message := fmt.Sprintf("Message %d at %s", i, time.Now().Format(time.RFC3339))
 			msg := &sarama.ProducerMessage{
 				Topic: topic,
+				Key:   sarama.StringEncoder(fmt.Sprintf("%d", i)),
 				Value: sarama.StringEncoder(message),
 			}
 
