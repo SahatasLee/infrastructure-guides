@@ -31,7 +31,7 @@
 - [X] 3.2 **Produce/Consume**:
     - [X] 3.2.1 Produce 10,000 messages.
     - [X] 3.2.2 Consume all messages (lag should be 0).
-- [ ] 3.3 **Performance Baseline**:
+- [X] 3.3 **Performance Baseline**:
     - [X] 3.3.1 Run `kafka-producer-perf-test` (Target: >10MB/s per broker). -> Result: 34.71 MB/s
 
 ## 4. 🛡️ Resilience (Day 2 Operations)
